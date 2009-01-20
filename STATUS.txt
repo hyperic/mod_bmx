@@ -1,0 +1,137 @@
+mod_bmx 1.0.0 STATUS:                                          -*-text-*-
+
+Releases:
+
+* 0.9.1 - Tagged RC2 2007-11-05
+* 0.9.0 - Tagged RC1 2007-10-29
+* 0.4.2 - Tagged Beta 2007-10-26
+* 0.4.1 - Tagged Beta 2007-09-21
+* 0.4.0 - Tagged Beta 2007-09-21
+* 0.3.4 - Tagged Beta 2007-09-10
+* 0.3.3 - Tagged Beta 2007-09-05
+* 0.3.2 - Tagged Beta 2007-08-29
+* 0.3.1 - Tagged Beta 2007-08-28
+* 0.3.0 - Tagged Alpha 2007-08-22
+* 0.2.1 - Not Tagged or Released.
+* 0.2.0 - Tagged Alpha 2007-07-30
+* 0.1.0 - Tagged Alpha 2007-07-23
+* 0.1.0 - Tagged Alpha 2007-07-21
+
+
+Release Showstoppers:
+
+Wishlist:
+
+* Implement plugin interface to allow new response syntaxes, such as XML.
+  (Currently it only supports a text/plain properties-style response.
+
+* Detect if httpd.h has ap_get_server_version (Apache 2.2) or if it has
+  ap_get_server_banner (Apache 2.4) in autoconf, and call the right one
+  from mod_bmx_status instead of using AP_SERVER_BASEVERSION directly.
+
+* Provide better APIs for storing persistent data, such as transparently to
+  a DBM or SHM.
+
+* Consider using SHM for transient metrics in mod_bmx_vhost instead of DBMs.
+
+* Add support for disabling/enabling for particular VHosts in mod_bmx_vhost.
+
+* Figure out a way to improve efficiency of bmx_vhost recorder so it doesn't
+  serialize all requests (since now they all depend on the same lock).
+  Solving this will improve overall server scalability.
+
+* Implement XML response type.
+
+
+DONE:
+
+* Implement mod_bmx_vhost, a replacement for the per-server information
+  provided by mod_snmp.
+
+* Added mod_bmx_status to report on mod_status-like information.
+
+* Added mod_bmx_example example BMX plugin that demonstrates proper
+  implementation of an BMX plugin.
+
+* Added mod_bmx.c core module that supports basic query syntax, provides
+  an bmx hook for query processing in plugins, and other utility routines.
+
+* Implement mod_bmx_vhost parameters needed by Hyperic.
+
+* Avoid using '*' to mean ANY, as in mod_bmx_vhost:Port=*, since '*' is
+  a reserved character in Java's JMX (which we try to emulate).
+
+* Made DBM filenames and DBM Lock filenames in mod_bmx_vhost relative to
+  the server root directory.
+
+Version 0.3.3:
+
+* Fixed portability problem with mod_bmx_status where it was using
+  the symbol ap_get_server_description that is only available in Apache 2.4.
+
+Version 0.3.4:
+
+* Added a bean property for mod_bmx_status when ExtendedStatus is enabled
+  in the server config. It will now add the Type=Extended or Type=Normal
+  as needed.
+
+* Fixed config.nice to work with autoconf, so that it now properly preserves
+  the configure parameters.
+
+Version 0.4.0:
+
+* Get rid of non-portable primitive bean property types and start using
+  APR's portable types (int and uint for 16/32/64). Also add a "byte" type
+  that prints as an unsigned char (0-255).
+
+* Add StartDate, StartTime and StartElapsed to mod_bmx_vhost output that
+  show when the record was originally created and how much time has passed
+  since then.
+
+* Added an BMX_NULL bean property type to allow for value-less properties.
+
+* Added a new type of mod_bmx_vhost:Type=info bean for each vhost that
+  contains the vhost's ServerName (including port), any ServerAliases
+  and the applicable Listen addresses. The global vhost does not have
+  a Type=info bean.
+
+* Changed the mod_bmx_vhost bean attribute "ServerName" to "Host" to
+  avoid confusion with the slightly different ServerName Apache config
+  directive.
+
+Version 0.4.1:
+
+* Use "1" instead of "true" in mod_bmx_example's boolean bean property
+  for portability.
+
+Version 0.4.2:
+
+* Added BMXVHostDBMFilename and BMXVHostLockFilename configuration directives
+  to allow the user to control where the data and lock file resources are
+  placed.
+
+* Added doxygen support, and a new "make docs" target.
+
+* Added INSTALL.txt to describe installation and configuration, and
+  some typical usage examples.
+
+* Added detailed documentation to the README.txt to describe the
+  project and the various components, as well as terminology. Also
+  included an API description, and the Query Syntax details.
+
+Version 0.9.0:
+
+* Added a lot of new source code comments in various places, an in particular
+  to the mod_bmx_vhost and mod_bmx_example modules.
+
+* Added notes about building PDF documentation.
+
+* Changed Doxygen config to include all sources for better API documentation
+  information.
+
+Version 0.9.1:
+
+* Renamed from XMX to BMX (Basic Management Extensions).
+
+* Changed Copyright for "Hyperic, LLC" to "Hyperic, Inc."
+

@@ -1,0 +1,6 @@
+mod_bmx Monitoring Module for Apache
+Copyright (c) 2007 Hyperic, Inc.
+Copyright (c) 2007 Codemass, Inc.
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).

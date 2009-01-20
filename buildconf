@@ -1,0 +1,28 @@
+#!/bin/sh
+# Copyright (C) 2006-2007 Codemass, Inc.  All rights reserved.
+# Use is subject to the license terms.
+
+wdir=`dirname $0`
+cd ${wdir}
+srcdir=`pwd`
+
+test -d ${srcdir}/autom4te.cache && rm -rf ${srcdir}/autom4te.cache
+
+test -f ${srcdir}/.deps && rm -f ${srcdir}/.deps
+touch ${srcdir}/.deps
+
+AUTOHEADER=`which autoheader`
+test -z $AUTOHEADER && AUTOHEADER=`which autoheader259`
+test -z $AUTOHEADER && AUTOHEADER=`which autoheader253`
+test -z $AUTOHEADER && AUTOHEADER=`which autoheader213`
+test -z $AUTOHEADER && echo "Can't find autoconf" && exit 1
+echo Running $AUTOHEADER
+`$AUTOHEADER`
+
+AUTOCONF=`which autoconf`
+test -z $AUTOCONF && AUTOCONF=`which autoconf259`
+test -z $AUTOCONF && AUTOCONF=`which autoconf253`
+test -z $AUTOCONF && AUTOCONF=`which autoconf213`
+test -z $AUTOCONF && echo "Can't find autoconf" && exit 1
+echo Running $AUTOCONF
+`$AUTOCONF`

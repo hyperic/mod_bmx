@@ -1,0 +1,55 @@
+APXS=@APXS@
+top_srcdir=@top_srcdir@
+srcdir=@srcdir@
+
+APACHE_CFLAGS=@APACHE_CFLAGS@
+APACHE_CPPFLAGS=@APACHE_CPPFLAGS@
+APACHE_LDFLAGS=@APACHE_LDFLAGS@
+EXTRA_INCLUDES=@EXTRA_INCLUDES@
+
+MODULES=mod_bmx.la mod_bmx_example.la mod_bmx_status.la mod_bmx_vhost.la
+OBJECTS=
+
+all: $(MODULES)
+
+# Compile normal C files using Apache flags
+%.o: %.c
+	$(CC) $(APACHE_CFLAGS) $(APACHE_CPPFLAGS) $(EXTRA_INCLUDES) -o $@ -c $<
+
+# Compile Apache modules using APXS
+mod_%.la: mod_%.c
+	$(APXS) -c $<
+
+mod_bmx.c: mod_bmx.h
+mod_bmx_example.c: mod_bmx.h
+mod_bmx_status.c: mod_bmx.h
+mod_bmx_vhost.c: mod_bmx.h
+
+mod_bmx.la: 
+
+install: $(MODULES)
+	for module in $(MODULES); do \
+		$(APXS) -a -i $$module; \
+	done
+
+docs:
+	doxygen doxygen.conf
+
+MODULES_O=mod_bmx.o mod_bmx_example.o mod_bmx_status.o mod_bmx_vhost.o
+MODULES_SLO=mod_bmx.slo mod_bmx_example.slo mod_bmx_status.slo mod_bmx_vhost.slo
+MODULES_LO=mod_bmx.lo mod_bmx_example.lo mod_bmx_status.lo mod_bmx_vhost.lo
+clean:
+	rm -f $(MODULES) $(MODULES_O) $(MODULES_SLO) $(MODULES_LO)
+	rm -rf .libs
+
+DISTCLEAN_FILES=Makefile config.log config.cache config.status config.h
+distclean: clean
+	rm -f ${DISTCLEAN_FILES}
+	rm -rf autom4te.cache
+	rm -rf docs
+
+EXTRACLEAN_FILES=configure config.nice
+extraclean: clean distclean
+	rm -f ${EXTRACLEAN_FILES}
+
+.PHONY: clean docs install all
