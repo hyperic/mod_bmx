@@ -1,0 +1,13 @@
+.deps
+.libs
+Makefile
+autom4te.cache
+config.h
+config.log
+config.nice
+config.status
+configure
+*.slo
+*.la
+*.lo
+*.o
