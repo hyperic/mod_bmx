@@ -3,7 +3,7 @@ AC_COPYRIGHT([Copyright (c) 2007 Hyperic, Inc.])
 AC_COPYRIGHT([Copyright (c) 2007 Codemass, Inc.])
 AC_COPYRIGHT([All rights reserved.  Use is subject to the license terms.])
 AC_REVISION($Revision: 1.16 $)
-AC_INIT([mod_bmx], [0.9.1], [aaron-bmx@codemass.com])
+AC_INIT([mod_bmx], [0.9.2], [aaron-bmx@codemass.com])
 
 AC_CONFIG_SRCDIR([mod_bmx.c])
 AC_CONFIG_AUX_DIR([build])
