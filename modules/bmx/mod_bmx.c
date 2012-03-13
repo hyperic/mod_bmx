@@ -682,10 +682,17 @@ static int bmx_handler(request_rec *r)
  * Module internals
  * -------------------------------------------------------------------- */
 
+static int bmx_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                          apr_pool_t *ptemp)
+{
+    ap_add_version_component(pconf, "mod_bmx/" MODBMX_VERSION);
+    return OK;
+}
+
 static void bmx_register_hooks(apr_pool_t *p)
 {
+    ap_hook_pre_config(bmx_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(bmx_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_add_version_component(config_pool, "mod_bmx/" MODBMX_VERSION);
 }
 
 module AP_MODULE_DECLARE_DATA bmx_module =
