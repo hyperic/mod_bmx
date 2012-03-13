@@ -1,0 +1,63 @@
+##
+##  Makefile.apxs -- Feature test procedures for mod_bmx Apache modules
+##
+##  Do not use this target; ./configure.apxs from the source root dir
+##
+ 
+# See the NOTICE file distributed with this work for information
+# regarding copyright ownership. This file is licensed to You under
+# the Apache License, Version 2.0 (the "License"); you may not use
+# this file except in compliance with the License.  You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+ 
+# top_builddir and top_srcdir are misnomers, because build/*.mk
+# top_builddir and top_srcdir are misnomers, because build/*.mk
+# scripts expect it them be the parent of the build directory,
+# and fail to trust the installbuilddir.
+exp_installbuilddir=$(shell $(APXS) -q exp_installbuilddir)
+top_srcdir=$(installbuilddir)/..
+top_builddir=$(installbuilddir)/..
+
+bmx_builddir=..
+bmx_srcdir=..
+builddir=.
+srcdir=.
+
+CLEAN_TARGETS = conftest_foofn.c \
+                conftest_sys_file_h.c \
+		*.loT
+TARGETS       = conftest_foofn \
+                conftest_sys_file_h
+
+PROGRAM_LDADD        = 
+PROGRAM_DEPENDENCIES = 
+
+include $(exp_installbuilddir)/rules.mk
+
+# Function checks follow this pattern; one to execute, one to create source
+# Header file checks simply validate that compilation into an .lo succeeds
+# TODO When the first function test is added, hijack conftest_foofn
+
+conftest_foofn: conftest_foofn.lo
+	$(LINK) conftest_foofn.lo
+
+conftest_sys_file_h: conftest_sys_file_h.lo
+	@echo "success" > $@
+
+conftest_foofn.c:
+	@echo "#include <sys/types.h>" > $@
+	@echo "#include <sys/stat.h>" >> $@
+	@echo "int main() { return foofn(2, 0644); }" >> $@
+
+conftest_sys_file_h.c:
+	@echo "#include <sys/file.h>" > $@
+
+
