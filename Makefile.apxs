@@ -86,7 +86,7 @@ install-conf-unused:
 	    cd $$j ; \
 	    for i in extra/httpd-bmx.conf; do \
 	    	if test -f $$i; then \
-	    	    sed -e '/^\#@@LoadFcgidModules@@/d;' \
+	    	    sed -e '/^\#@@LoadBmxModules@@/d;' \
 			-e 's#@exp_runtimedir@#$(exp_runtimedir)#;' \
 	    		-e 's#@exp_sysconfdir@#$(exp_sysconfdir)#;' \
 	    		-e 's#@rel_sysconfdir@#$(rel_sysconfdir)#;' \
