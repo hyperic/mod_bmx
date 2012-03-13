@@ -1,13 +1,11 @@
 /*
  * mod_bmx.h: Apache Monitoring Core Module
  *
- * Copyright 2007 Codemass, Inc.
- * Copyright 2007 Hyperic, Inc.
- * All rights reserved. Use is subject to license terms.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * See the NOTICE file distributed with this work for information
+ * regarding copyright ownership. This file is licensed to You under
+ * the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.  You may obtain
+ * a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -26,6 +24,28 @@
 
 #ifndef MOD_BMX_H
 #define MOD_BMX_H
+
+
+#define MODBMX_COPYRIGHT \
+  "Copyright 2012 VMware, Inc."
+
+#define MODBMX_VERSION_MAJOR  0
+#define MODBMX_VERSION_MINOR  9
+#define MODBMX_VERSION_SUBVER 3
+#define MODBMX_VERSION_DEV    1
+
+#if MODBMX_VERSION_DEV
+#define MODBMX_VERSION_DEVSTR "-dev"
+#else
+#define MODBMX_VERSION_DEVSTR ""
+#endif
+
+#define MODBMX_REVISION      APR_STRINGIFY(MODBMX_VERSION_MAJOR) \
+                         "." APR_STRINGIFY(MODBMX_VERSION_MINOR) \
+                         "." APR_STRINGIFY(MODBMX_VERSION_SUBVER)
+#define MODBMX_VERSION       MODBMX_REVISION MODBMX_VERSION_DEVSTR
+
+#ifndef VERSION_ONLY
 
 #include "httpd.h"
 #include "ap_config.h"
@@ -294,6 +314,8 @@ APR_DECLARE_EXTERNAL_HOOK(bmx, BMX, int, query_hook,
                           (request_rec *r,
                            const struct bmx_objectname *query,
                            bmx_bean_print print_bean_fn))
+
+#endif /* !defined (VERSION_ONLY) */
 
 #endif /* MOD_BMX_H */
 
