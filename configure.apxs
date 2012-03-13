@@ -66,17 +66,21 @@ touch .deps
 touch build/.deps
 touch modules/bmx/.deps
 
+if 0; then
+# Requires modules/bmx/bmx_config.h.in template
+# and build/Makefile.apxs feature test scripts
+
 cd build
 found_features=""
 echo "Detecting features"
 echo "Detecting features" > ../config.apxs.log
 
-#test invocations follow the pattern;
-#
-#if make local-clean conftest_foofn >>../config.apxs.log 2>&1; then
-#  found_features="$found_features \
-#    -e \"s/^#undef \(HAVE_FOOFN\)[ \t]*/#define \1 1/;\""
-#fi
+#test invocations follow these patterns;
+
+if make local-clean conftest_foofn >>../config.apxs.log 2>&1; then
+  found_features="$found_features \
+    -e \"s/^#undef \(HAVE_FOOFN\)[ \t]*/#define \1 1/;\""
+fi
 
 if make local-clean conftest_sys_file_h >>../config.apxs.log 2>&1; then
   found_features="$found_features \
@@ -91,6 +95,8 @@ if test "x$found_features" = "x"; then
 else
   eval sed "$found_features" < modules/bmx/bmx_config.h.in \
                            > modules/bmx/bmx_config.h
+fi
+
 fi
 
 echo ""

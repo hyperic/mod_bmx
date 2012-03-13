@@ -13,36 +13,14 @@ dnl See the License for the specific language governing permissions and
 dnl limitations under the License.
 
 dnl #  start of module specific part
-APACHE_MODPATH_INIT(fcgid)
+APACHE_MODPATH_INIT(bmx)
 
-case $host in
-    *mingw*)
-        fcgid_platform_objs="fcgid_pm_win.lo fcgid_proc_win.lo fcgid_proctbl_win.lo"
-        ;;
-    *)
-        fcgid_platform_objs="fcgid_pm_unix.lo fcgid_proc_unix.lo fcgid_proctbl_unix.lo fcgid_mutex_unix.lo"
-        ;;
-esac
+# TODO: toggle/force mod_bmx for any bmx_extention 
 
-dnl #  list of module object files
-fcigd_objs="dnl
-mod_fcgid.lo dnl
-fcgid_bridge.lo dnl
-fcgid_conf.lo dnl
-fcgid_pm_main.lo dnl
-fcgid_protocol.lo dnl
-fcgid_spawn_ctl.lo dnl
-fcgid_bucket.lo dnl
-fcgid_filter.lo dnl
-$fcgid_platform_objs dnl
-"
-
-APACHE_MODULE(fcgid, [FastCGI support (mod_fcgid)], $fcigd_objs, , no, [
-    AC_CHECK_HEADERS(sys/file.h)
-    AC_CHECK_HEADERS(sys/mman.h)
-    AC_CHECK_HEADERS(sys/mutex.h)
-    AC_CHECK_HEADERS(sys/shm.h)
-])
+APACHE_MODULE(bmx, [BMX Monitoring Core (mod_bmx)], , , most)
+APACHE_MODULE(bmx_example, [BMX Example Plugin (mod_bmx_example)], , , no)
+APACHE_MODULE(bmx_status, [BMX Status Plugin (mod_bmx_status)], , , most)
+APACHE_MODULE(bmx_vhost, [BMX VHost Plugin (mod_bmx_vhost)], , , most)
 
 dnl #  end of module specific part
 APACHE_MODPATH_FINISH

@@ -1,13 +1,11 @@
 /*
  * mod_bmx.c: Apache Monitoring Core Module
  *
- * Copyright 2007 Codemass, Inc.
- * Copyright 2007 Hyperic, Inc.
- * All rights reserved. Use is subject to license terms.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * See the NOTICE file distributed with this work for information
+ * regarding copyright ownership. This file is licensed to You under
+ * the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.  You may obtain
+ * a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -687,6 +685,7 @@ static int bmx_handler(request_rec *r)
 static void bmx_register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(bmx_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_add_version_component(config_pool, "mod_bmx/" MODBMX_VERSION);
 }
 
 module AP_MODULE_DECLARE_DATA bmx_module =

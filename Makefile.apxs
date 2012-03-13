@@ -1,9 +1,32 @@
 ##
-##  Makefile.apxs -- Build procedure for mod_fcgid Apache module
+##  Makefile.apxs -- Build procedure for mod_bmx Apache modules
 ##
-##  Do not use the .apxs makefile, run ./configure.apxs and build from 'Makefile'
+##  Do not use the Makefile.apxs file, from this source root dir, run
+##
+##    $ ./configure.apxs
+##    $ make
+##    $ make install
+##
+##  APXS variable is accepted, so to use a particular specific apxs, try
+##
+##    $ APXS=/opt/httpd/bin/apxs2 ./configure.apxs
 ##
  
+# See the NOTICE file distributed with this work for information
+# regarding copyright ownership. This file is licensed to You under
+# the Apache License, Version 2.0 (the "License"); you may not use
+# this file except in compliance with the License.  You may obtain
+# a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+ 
+# top_builddir and top_srcdir are misnomers, because build/*.mk
 # top_builddir and top_srcdir are misnomers, because build/*.mk scripts
 # expect each of them to be the parent of the build directory, and fail
 # to trust the installbuilddir.
@@ -11,8 +34,8 @@ exp_installbuilddir=$(shell $(APXS) -q exp_installbuilddir)
 top_srcdir=$(installbuilddir)/..
 top_builddir=$(installbuilddir)/..
 
-fcgid_builddir=.
-fcgid_srcdir=.
+bmx_builddir=.
+bmx_srcdir=.
 builddir=.
 srcdir=.
 awk=.
@@ -23,7 +46,8 @@ CLEAN_SUBDIRS =
 TARGETS         = 
 INSTALL_TARGETS = install-conf install-manual
 ## no such targets yet; install-include
-DISTCLEAN_TARGETS  = config.apxs.log modules/fcgid/fcgid_config.h
+DISTCLEAN_TARGETS  = config.apxs.log 
+# modules/bmx/bmx_config.h
 EXTRACLEAN_TARGETS = 
 
 include $(exp_installbuilddir)/rules.mk
@@ -44,23 +68,23 @@ install-conf:
 			  $(DESTDIR)$(exp_sysconfdir)/original
 	for i in $(DESTDIR)$(httpd_conffile) $(DESTDIR)$(httpd_origconffile); do \
 	    if test -f $$i; then \
-		($(awk) -f $(fcgid_srcdir)/build/addloadexample.awk \
-		    -v MODULE=fcgid -v DSO=.so -v LIBPATH=$(rel_libexecdir) \
+		($(awk) -f $(bmx_srcdir)/build/addloadexample.awk \
+		    -v MODULE=bmx -v DSO=.so -v LIBPATH=$(rel_libexecdir) \
 		    < $$i > $$i.new && \
 		 mv $$i $$i.bak && mv $$i.new $$i \
 	        ) || true; \
 	    fi; \
 	done
 #	Todo - add this flag to awk above, if/when this Include is distributed
-#		    -v EXAMPLECONF=$(rel_sysconfdir)/extra/httpd-fcgid.conf
+#		    -v EXAMPLECONF=$(rel_sysconfdir)/extra/httpd-bmx.conf
 
 install-conf-unused:
 	@$(MKINSTALLDIRS) $(DESTDIR)$(exp_sysconfdir)/extra \
 			  $(DESTDIR)$(exp_sysconfdir)/original/extra
-	@cd $(fcgid_srcdir)/docs/conf; \
-	for j in $(fcgid_srcdir)/docs/conf; do \
+	@cd $(bmx_srcdir)/docs/conf; \
+	for j in $(bmx_srcdir)/docs/conf; do \
 	    cd $$j ; \
-	    for i in extra/httpd-fcgid.conf; do \
+	    for i in extra/httpd-bmx.conf; do \
 	    	if test -f $$i; then \
 	    	    sed -e '/^\#@@LoadFcgidModules@@/d;' \
 			-e 's#@exp_runtimedir@#$(exp_runtimedir)#;' \
@@ -79,11 +103,11 @@ install-conf-unused:
 	done
 
 svnroot=http://svn.apache.org/repos/asf/httpd
-manualdir=$(fcgid_srcdir)/docs/manual
+manualdir=$(bmx_srcdir)/docs/manual
 
 # Note; by default,  make generate-docs  rebuilds the local pages
 # To regenerate the installed pages (after using make install to
-# drop in the fcgid content), simply
+# drop in the bmx content), simply
 #
 #   make manualdir=/path/to/manual generate-docs
 #
@@ -100,8 +124,8 @@ generate-docs:
 	  ./build.sh all
 
 generate-dox:
-	cd $(fcgid_srcdir); \
-	  doxygen $(fcgid_srcdir)/docs/doxygen-fcgid.conf
+	cd $(bmx_srcdir); \
+	  doxygen $(bmx_srcdir)/docs/doxygen-bmx.conf
 
 install-manual:
 	@echo Installing online manual
@@ -109,9 +133,9 @@ install-manual:
           || $(MKINSTALLDIRS) $(DESTDIR)$(exp_manualdir)
 	@if test "x$(RSYNC)" != "x" && test -x $(RSYNC) ; then \
 	  $(RSYNC) --exclude .svn -rlpt --numeric-ids \
-		$(fcgid_srcdir)/docs/manual/ $(DESTDIR)$(exp_manualdir)/; \
+		$(bmx_srcdir)/docs/manual/ $(DESTDIR)$(exp_manualdir)/; \
 	else \
-	  cp -rp $(fcgid_srcdir)/docs/manual/* $(DESTDIR)$(exp_manualdir)/ && \
+	  cp -rp $(bmx_srcdir)/docs/manual/* $(DESTDIR)$(exp_manualdir)/ && \
 	  find $(DESTDIR)$(exp_manualdir) -name ".svn" -type d -print \
 	    | xargs rm -rf 2>/dev/null || true; \
 	fi
@@ -119,7 +143,7 @@ install-manual:
 install-include-unused:
 	@echo Installing header files
 	@$(MKINSTALLDIRS) $(DESTDIR)$(exp_includedir) && \
-	  cp $(fcgid_srcdir)/include/mod_fcgid.h $(DESTDIR)$(exp_includedir)/ && \
-	  chmod 0644 $(DESTDIR)$(exp_includedir)/mod_fcgid.h
+	  cp $(bmx_srcdir)/include/mod_bmx.h $(DESTDIR)$(exp_includedir)/ && \
+	  chmod 0644 $(DESTDIR)$(exp_includedir)/mod_bmx.h
 
 .PHONY: generate-dox generate-docs

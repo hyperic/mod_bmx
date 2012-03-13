@@ -17,7 +17,13 @@
 #
 mod_bmx.la: mod_bmx.slo
 	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version mod_bmx.lo
+mod_bmx_example.la: mod_bmx_example.slo
+	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version mod_bmx_example.lo
+mod_bmx_status.la: mod_bmx_status.slo
+	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version mod_bmx_status.lo
+mod_bmx_vhost.la: mod_bmx_vhost.slo
+	$(SH_LINK) -rpath $(libexecdir) -module -avoid-version mod_bmx_vhost.lo
 DISTCLEAN_TARGETS = modules.mk
 static =
-shared =  mod_bmx.la mod_bmx_status.la mod_bmx_vhost.la mod_bmx_example.la
+shared =  mod_bmx.la mod_bmx_example.la mod_bmx_status.la mod_bmx_vhost.la
 
