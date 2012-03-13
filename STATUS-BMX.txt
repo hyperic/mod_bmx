@@ -39,6 +39,10 @@ Wishlist:
 
 * Implement XML response type.
 
+* Server generation moves into the mpm query and potentially takes on new
+  meanings; have replaced ap_my_generation with ap_scoreboard_image->global's
+  running_generation, but this may require more thought for Event and other
+  new asynchronous MPMs.
 
 DONE:
 
@@ -140,3 +144,4 @@ Version 0.9.3:
 
 * Add httpd 2.4 logging control
 
+* Support httpd 2.4 server generation logic

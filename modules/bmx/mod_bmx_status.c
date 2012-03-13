@@ -164,14 +164,19 @@ static int bmx_status_query_hook(request_rec *r,
         for (j = 0; j < thread_limit; ++j) {
             int indx = (i * thread_limit) + j;
 
+#if AP_MODULE_MAGIC_AT_LEAST(20071023,0)
+            ws_record = ap_get_scoreboard_worker_from_indexes(i, j);
+#else
             ws_record = ap_get_scoreboard_worker(i, j);
+#endif
             res = ws_record->status;
             stat_buffer[indx] = status_flags[res];
 
             if (!ps_record->quiescing
                 && ps_record->pid) {
                 if (res == SERVER_READY
-                    && ps_record->generation == ap_my_generation)
+                    && ps_record->generation
+                           == ap_scoreboard_image->global->running_generation)
                     ready++;
                 else if (res != SERVER_DEAD &&
                          res != SERVER_STARTING &&
@@ -264,7 +269,7 @@ static int bmx_status_query_hook(request_rec *r,
                                    r->pool));
     bmx_bean_prop_add(bmx_status_bean,
         bmx_property_int32_create("ParentServerGeneration",
-                                  ap_my_generation,
+                                  ap_scoreboard_image->global->running_generation,
                                   r->pool));
     bmx_bean_prop_add(bmx_status_bean,
         bmx_property_uint64_create("ServerUptimeSeconds", up_time, r->pool));

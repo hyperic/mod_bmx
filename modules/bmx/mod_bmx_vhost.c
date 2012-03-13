@@ -539,7 +539,8 @@ static int vhost_data_reset(apr_dbm_t *dbm, server_rec *s, apr_pool_t *ptemp,
     /* otherwise reuse the previous record */
     else {
         memcpy(&vhost_data, value.dptr, sizeof(vhost_data));
-        if (ap_my_generation == 0) { /* clear since-start parts */
+        if (ap_scoreboard_image->global->running_generation == 0) {
+            /* clear since-start parts */
             memset(&vhost_data.since_start, 0, sizeof(vhost_data.since_start));
             vhost_data.since_start.StartTime = now;
         }
