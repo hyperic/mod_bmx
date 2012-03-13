@@ -1,8 +1,8 @@
 mod_bmx Monitoring Module for Apache
-Copyright (c) 2007 Codemass, Inc.
-Copyright (c) 2007 Hyperic, Inc.
-All rights reserved.  See the LICENSE.txt file distributed with this work
-for additional information regarding copyright ownership.
+
+See the NOTICE file distributed with this work for information
+regarding copyright ownership.  See the LICENSE file distributed
+with this work for information regarding licensing.
 =====================================================================
 
 Please see the INSTALL.txt file for installation and configuration

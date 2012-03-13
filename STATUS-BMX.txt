@@ -136,4 +136,4 @@ Version 0.9.3:
 
 * Report server_description as ServerVersion from 2.2.4 onwards.
 
-
+* Register mod_bmx in the Server tokens
