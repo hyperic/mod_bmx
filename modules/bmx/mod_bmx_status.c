@@ -1,13 +1,11 @@
 /*
  * mod_bmx_status.c: Apache Internal Status Monitoring Module
  *
- * Copyright 2007 Codemass, Inc.
- * Copyright 2007 Hyperic, Inc.
- * All rights reserved. Use is subject to license terms.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * See the NOTICE file distributed with this work for information
+ * regarding copyright ownership. This file is licensed to You under
+ * the Apache License, Version 2.0 (the "License"); you may not use
+ * this file except in compliance with the License.  You may obtain
+ * a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -239,7 +237,11 @@ static int bmx_status_query_hook(request_rec *r,
                                    r->pool));
     bmx_bean_prop_add(bmx_status_bean,
         bmx_property_string_create("ServerVersion",
-                                   AP_SERVER_BASEVERSION,
+#if AP_MODULE_MAGIC_AT_LEAST(20051115,4)
+                                   ap_get_server_description(),
+#else
+                                   ap_get_server_version(),
+#endif
                                    r->pool));
     bmx_bean_prop_add(bmx_status_bean,
         bmx_property_string_create("ServerBuilt",

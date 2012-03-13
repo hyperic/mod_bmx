@@ -2,6 +2,7 @@ mod_bmx 1.0.0 STATUS:                                          -*-text-*-
 
 Releases:
 
+* 0.9.2 - Tagged RC3 2012-03-01
 * 0.9.1 - Tagged RC2 2007-11-05
 * 0.9.0 - Tagged RC1 2007-10-29
 * 0.4.2 - Tagged Beta 2007-10-26
@@ -24,10 +25,6 @@ Wishlist:
 
 * Implement plugin interface to allow new response syntaxes, such as XML.
   (Currently it only supports a text/plain properties-style response.
-
-* Detect if httpd.h has ap_get_server_version (Apache 2.2) or if it has
-  ap_get_server_banner (Apache 2.4) in autoconf, and call the right one
-  from mod_bmx_status instead of using AP_SERVER_BASEVERSION directly.
 
 * Provide better APIs for storing persistent data, such as transparently to
   a DBM or SHM.
@@ -134,4 +131,9 @@ Version 0.9.1:
 * Renamed from XMX to BMX (Basic Management Extensions).
 
 * Changed Copyright for "Hyperic, LLC" to "Hyperic, Inc."
+
+Version 0.9.3:
+
+* Report server_description as ServerVersion from 2.2.4 onwards.
+
 
