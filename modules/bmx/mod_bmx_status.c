@@ -73,6 +73,10 @@
 
 module AP_MODULE_DECLARE_DATA bmx_status_module;
 
+#if AP_MODULE_MAGIC_AT_LEAST(20100606,0)
+APLOG_USE_MODULE(bmx_status);
+#endif
+
 #define BMX_STATUS_DOMAIN "mod_bmx_status"
 static struct bmx_objectname *bmx_status_objectname;
 

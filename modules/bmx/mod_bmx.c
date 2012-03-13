@@ -33,14 +33,13 @@
 #include "apr_optional.h"
 #include "mod_bmx.h"
 
+#if AP_MODULE_MAGIC_AT_LEAST(20100606,0)
+APLOG_USE_MODULE(bmx);
+#endif
+
 /* --------------------------------------------------------------------
  * Global definitions
  * -------------------------------------------------------------------- */
-
-/**
- * BMX Handler string, for SetHandler configuration directives.
- */
-#define BMX_HANDLER "bmx-handler"
 
 /**
  * The prototype for our module structure, defined at the bottom.
@@ -51,6 +50,11 @@ module AP_MODULE_DECLARE_DATA bmx_module;
  * Special bmx_objectname object which is used to query all domains.
  */
 struct bmx_objectname bmx_query_all;
+
+/**
+ * BMX Handler string, for SetHandler configuration directives.
+ */
+#define BMX_HANDLER "bmx-handler"
 
 /* --------------------------------------------------------------------
  * Configuration handling routines

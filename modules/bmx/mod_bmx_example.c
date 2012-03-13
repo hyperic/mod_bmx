@@ -41,6 +41,10 @@
 /** The prototype for our module structure, defined at the bottom */
 module AP_MODULE_DECLARE_DATA bmx_example_module;
 
+#if AP_MODULE_MAGIC_AT_LEAST(20100606,0)
+APLOG_USE_MODULE(bmx_example);
+#endif
+
 /** The BMX Bean domain used for all beans exported by mod_bmx_example. */
 #define BMX_EXAMPLE_DOMAIN "mod_bmx_example"
 

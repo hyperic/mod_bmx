@@ -84,6 +84,10 @@
 /** The prototype for our module structure, defined at the bottom. */
 module AP_MODULE_DECLARE_DATA bmx_vhost_module;
 
+#if AP_MODULE_MAGIC_AT_LEAST(20100606,0)
+APLOG_USE_MODULE(bmx_vhost);
+#endif
+
 /** The default BMX Domain exported by this BMX Plugin. */
 #define BMX_VHOST_DOMAIN "mod_bmx_vhost"
 
