@@ -3,7 +3,7 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
-Project: "mod_bmx"=modules\bmx\mod_bmx.dsp - Package Owner=<4>
+Project: "mod_bmx"=.\modules\bmx\mod_bmx.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_bmx"=modules\bmx\mod_bmx_example.dsp - Package Owner=<4>
+Project: "mod_bmx_example"=.\modules\bmx\mod_bmx_example.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -23,11 +23,14 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name mod_bmx
+    End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "mod_bmx"=modules\bmx\mod_bmx_status.dsp - Package Owner=<4>
+Project: "mod_bmx_status"=.\modules\bmx\mod_bmx_status.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -35,11 +38,14 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name mod_bmx
+    End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "mod_bmx"=modules\bmx\mod_bmx_vhost.dsp - Package Owner=<4>
+Project: "mod_bmx_vhost"=.\modules\bmx\mod_bmx_vhost.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -47,6 +53,9 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name mod_bmx
+    End Project Dependency
 }}}
 
 ###############################################################################
