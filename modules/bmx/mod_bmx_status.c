@@ -297,8 +297,8 @@ static int bmx_status_query_hook(request_rec *r,
                     ((float) count / (float) up_time), r->pool));
             bmx_bean_prop_add(bmx_status_bean,
                 bmx_property_float_create("KilobytesPerSec",
-                    (unsigned long)(KBYTE * (float) kbcount
-                                    / (float) up_time), r->pool));
+                    ((float) KBYTE * (float) kbcount
+                                  / (float) up_time), r->pool));
         }
         if (count > 0)
             bmx_bean_prop_add(bmx_status_bean,

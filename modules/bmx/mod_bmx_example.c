@@ -114,9 +114,9 @@ static int bmx_example_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     bmx_bean_prop_add(bmx_example_bean,
         bmx_property_uint32_create("SomeUINT32", 123456, pconf));
     bmx_bean_prop_add(bmx_example_bean,
-        bmx_property_int64_create("SomeINT64", -1231231231231232037LL, pconf));
+        bmx_property_int64_create("SomeINT64", APR_INT64_C(-1231231231231232037), pconf));
     bmx_bean_prop_add(bmx_example_bean,
-        bmx_property_uint64_create("SomeUINT64", 1231231231231232037LL, pconf));
+        bmx_property_uint64_create("SomeUINT64", APR_UINT64_C(1231231231231232037), pconf));
     bmx_bean_prop_add(bmx_example_bean,
         bmx_property_float_create("SomeFloat", 3.1415f, pconf));
     bmx_bean_prop_add(bmx_example_bean,
