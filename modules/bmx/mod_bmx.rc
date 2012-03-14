@@ -5,7 +5,7 @@
 #define ASF_LICENSE \
   "See the NOTICE file distributed with this work for additional information " \
   "regarding copyright ownership. This file is licensed to You under " \
-  "the Apache License, Version 2.0 (the "License"); you may not use " \
+  "the Apache License, Version 2.0 (the ""License""); you may not use " \
   "this file except in compliance with the License.  You may obtain " \
   "a copy of the License at\r\n\r\n" \
   "http://www.apache.org/licenses/LICENSE-2.0\r\n\r\n" \
@@ -19,6 +19,9 @@
 #define MODBMX_REVISION_CSV  MODBMX_VERSION_MAJOR ##, \
                              ##MODBMX_VERSION_MINOR ##, \
                              ##MODBMX_VERSION_SUBVER
+
+#define LONG_NAME_STR APR_STRINGIFY(LONG_NAME)
+#define BIN_NAME_STR APR_STRINGIFY(BIN_NAME)
 
 1 VERSIONINFO
  FILEVERSION MODBMX_REVISION_CSV,200
@@ -39,11 +42,11 @@ BEGIN
     BEGIN
       VALUE "Comments", ASF_LICENSE "\0"
       VALUE "CompanyName", "VMware, Inc.\0"
-      VALUE "FileDescription", LONG_NAME "\0"
+      VALUE "FileDescription", LONG_NAME_STR "\0"
       VALUE "FileVersion", MODBMX_REVISION "\0"
-      VALUE "InternalName", BIN_NAME "\0"
+      VALUE "InternalName", BIN_NAME_STR "\0"
       VALUE "LegalCopyright", "Copyright 2012 VMware, Inc.\0"
-      VALUE "OriginalFilename", BIN_NAME "\0"
+      VALUE "OriginalFilename", BIN_NAME_STR "\0"
       VALUE "ProductName", "BMX Monitoring Modules for Apache HTTP Server\0"
       VALUE "ProductVersion", MODBMX_REVISION "\0"
     END

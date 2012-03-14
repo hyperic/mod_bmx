@@ -25,6 +25,7 @@
 #ifndef MOD_BMX_H
 #define MOD_BMX_H
 
+#include "apr_general.h" /* stringify */
 
 #define MODBMX_COPYRIGHT \
   "Copyright 2012 VMware, Inc."
