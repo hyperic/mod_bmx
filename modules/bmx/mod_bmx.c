@@ -49,7 +49,7 @@ module AP_MODULE_DECLARE_DATA bmx_module;
 /**
  * Special bmx_objectname object which is used to query all domains.
  */
-struct bmx_objectname bmx_query_all;
+struct bmx_objectname BMX_DECLARE_DATA bmx_query_all;
 
 /**
  * BMX Handler string, for SetHandler configuration directives.

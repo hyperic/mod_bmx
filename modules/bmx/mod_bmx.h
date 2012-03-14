@@ -233,7 +233,7 @@ struct bmx_objectname {
 /**
  * Special bmx_objectname object that represents a wildcard query.
  */
-extern struct bmx_objectname bmx_query_all;
+extern struct bmx_objectname BMX_DECLARE_DATA bmx_query_all;
 #define BMX_QUERY_ALL (&bmx_query_all)
 
 /**
