@@ -559,9 +559,9 @@ static int bmx_objectname_str_iterator(void *rec, const char *key,
     if (key && value) {
         if (data->first) {
             data->first = 0;
-            p += snprintf(data->buf, data->buflen, "%s=%s", key, value);
+            p += apr_snprintf(data->buf, data->buflen, "%s=%s", key, value);
         } else {
-            p += snprintf(data->buf, data->buflen, ",%s=%s", key, value);
+            p += apr_snprintf(data->buf, data->buflen, ",%s=%s", key, value);
         }
 
         data->buflen -= p - data->buf;
@@ -576,7 +576,7 @@ apr_size_t bmx_objectname_str(const struct bmx_objectname *on,
     char *p = buf;
     if (on) {
         if (on->domain) {
-            p += snprintf(p, buflen, "%s:", on->domain);
+            p += apr_snprintf(p, buflen, "%s:", on->domain);
         } else {
             *p++ = '*';
             *p++ = ':';
