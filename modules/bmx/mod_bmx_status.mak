@@ -102,7 +102,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_bmx_status.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=libhttpd.lib libaprutil-1.lib libapr-1.lib kernel32.lib /nologo /base:"0x46430000" /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_bmx_status.pdb" /debug /machine:I386 /out:"$(OUTDIR)\mod_bmx_status.so" /implib:"$(OUTDIR)\mod_bmx_status.lib" /libpath:"..\..\Release" /libpath:"..\..\srclib\apr\Release" /libpath:"..\..\srclib\apr-util\Release" /libpath:"$(APACHE2_HOME)/lib" /opt:ref 
+LINK32_FLAGS=libhttpd.lib libaprutil-1.lib libapr-1.lib kernel32.lib /nologo /base:"0x42730000" /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_bmx_status.pdb" /debug /out:"$(OUTDIR)\mod_bmx_status.so" /implib:"$(OUTDIR)\mod_bmx_status.lib" /libpath:"..\..\Release" /libpath:"..\..\srclib\apr\Release" /libpath:"..\..\srclib\apr-util\Release" /libpath:"$(APACHE2_HOME)/lib" /opt:ref 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_bmx_status.obj" \
 	"$(INTDIR)\mod_bmx_status.res" \
@@ -205,7 +205,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\mod_bmx_status.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=libhttpd.lib libaprutil-1.lib libapr-1.lib kernel32.lib /nologo /base:"0x46430000" /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_bmx_status.pdb" /debug /machine:I386 /out:"$(OUTDIR)\mod_bmx_status.so" /implib:"$(OUTDIR)\mod_bmx_status.lib" /libpath:"..\..\Debug" /libpath:"..\..\srclib\apr\Debug" /libpath:"..\..\srclib\apr-util\Debug" /libpath:"$(APACHE2_HOME)/lib" 
+LINK32_FLAGS=libhttpd.lib libaprutil-1.lib libapr-1.lib kernel32.lib /nologo /base:"0x42730000" /subsystem:windows /dll /incremental:no /pdb:"$(OUTDIR)\mod_bmx_status.pdb" /debug /out:"$(OUTDIR)\mod_bmx_status.so" /implib:"$(OUTDIR)\mod_bmx_status.lib" /libpath:"..\..\Debug" /libpath:"..\..\srclib\apr\Debug" /libpath:"..\..\srclib\apr-util\Debug" /libpath:"$(APACHE2_HOME)/lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\mod_bmx_status.obj" \
 	"$(INTDIR)\mod_bmx_status.res" \
