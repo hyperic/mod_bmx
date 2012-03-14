@@ -365,7 +365,7 @@ static void create_global_scfg(apr_pool_t *p)
  */
 static char *vhost_listen_addresses_str(apr_pool_t *p, server_rec *s)
 {
-    ssize_t slen = 0;
+    apr_ssize_t slen = 0;
     char *str = NULL, *pstr;
     struct server_addr_rec *sar;
     int first = 1;
@@ -969,16 +969,16 @@ out:
 
 static int bmx_vhost_log_transaction(request_rec *r)
 {
+    struct bmx_vhost_scfg *scfg = ap_get_module_config(r->server->module_config,
+                                                       &bmx_vhost_module);
     int rv = OK;
     apr_datum_t value, global_value;
     struct vhost_data vhost_data, global_data;
     request_rec *last = r;
 
+
     memset(&value, 0, sizeof(value));
     memset(&global_value, 0, sizeof(global_value));
-
-    struct bmx_vhost_scfg *scfg = ap_get_module_config(r->server->module_config,
-                                                       &bmx_vhost_module);
 
     /* find the last response (in case of internal redirect?) */
     while (last->next) {
