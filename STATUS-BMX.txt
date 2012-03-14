@@ -2,6 +2,7 @@ mod_bmx 1.0.0 STATUS:                                          -*-text-*-
 
 Releases:
 
+* 0.9.3 - Tagged RC4 2012-03-14
 * 0.9.2 - Tagged RC3 2012-03-01
 * 0.9.1 - Tagged RC2 2007-11-05
 * 0.9.0 - Tagged RC1 2007-10-29
@@ -42,7 +43,7 @@ Wishlist:
 * Server generation moves into the mpm query and potentially takes on new
   meanings; have replaced ap_my_generation with ap_scoreboard_image->global's
   running_generation, but this may require more thought for Event and other
-  new asynchronous MPMs.
+  new asynchronous MPMs; c.f. the current state of mod_status for validation.
 
 DONE:
 
@@ -138,10 +139,15 @@ Version 0.9.1:
 
 Version 0.9.3:
 
-* Report server_description as ServerVersion from 2.2.4 onwards.
-
 * Register mod_bmx in the Server tokens
+
+* Report server_description as ServerVersion from 2.2.4 onwards.
 
 * Add httpd 2.4 logging control
 
 * Support httpd 2.4 server generation logic
+
+* Refactor unix build for ./configure.apxs or in-tree as part of httpd
+
+* Introduce windows build schema, mod_bmx BMX_DECLARE exports
+
