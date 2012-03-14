@@ -1,0 +1,5 @@
+# Microsoft Developer Studio Generated Dependency File, included by mod_bmx_example.mak
+
+.\mod_bmx.rc : \
+	".\mod_bmx.h"\
+	
