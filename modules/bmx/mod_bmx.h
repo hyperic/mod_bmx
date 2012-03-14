@@ -53,6 +53,24 @@
 #include "apr_tables.h"
 #include "apr_ring.h"
 
+#if !defined(WIN32)
+#define BMX_DECLARE(type)            type
+#define BMX_DECLARE_NONSTD(type)     type
+#define BMX_DECLARE_DATA
+#elif defined(BMX_DECLARE_STATIC)
+#define BMX_DECLARE(type)            type __stdcall
+#define BMX_DECLARE_NONSTD(type)     type
+#define BMX_DECLARE_DATA
+#elif defined(BMX_DECLARE_EXPORT)
+#define BMX_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define BMX_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define BMX_DECLARE_DATA             __declspec(dllexport)
+#else
+#define BMX_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define BMX_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define BMX_DECLARE_DATA             __declspec(dllimport)
+#endif
+
 struct bmx_property;
 
 /**
@@ -122,68 +140,70 @@ APR_RING_HEAD(bmx_properties, bmx_property);
 /**
  * Create a Boolean Bean Property.
  */
-extern struct bmx_property *bmx_property_boolean_create(const char *key,
-                                                        int boolean,
-                                                        apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_boolean_create(
+                                       const char *key, int b,
+                                       apr_pool_t *p);
 /**
  * Create a Byte (8-bit unsigned) Bean Property.
  */
-extern struct bmx_property *bmx_property_byte_create(const char *key,
-                                                     apr_byte_t byte,
-                                                     apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_byte_create(
+                                       const char *key, apr_byte_t b,
+                                       apr_pool_t *p);
 /**
  * Create a signed 16-bit short Bean Property.
  */
-extern struct bmx_property *bmx_property_int16_create(const char *key,
-                                                      apr_int16_t int16,
-                                                      apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_int16_create(
+                                       const char *key, apr_int16_t i,
+                                       apr_pool_t *p);
 /**
  * Create an unsigned 16-bit short Bean Property.
  */
-extern struct bmx_property *bmx_property_uint16_create(const char *key,
-                                                       apr_uint16_t uint16,
-                                                       apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_uint16_create(
+                                       const char *key, apr_uint16_t ui,
+                                       apr_pool_t *p);
 /**
  * Create a signed 32-bit integer Bean Property.
  */
-extern struct bmx_property *bmx_property_int32_create(const char *key,
-                                                      apr_int32_t int32,
-                                                      apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_int32_create(
+                                       const char *key, apr_int32_t i,
+                                       apr_pool_t *p);
 /**
  * Create an unsigned 32-bit integer Bean Property.
  */
-extern struct bmx_property *bmx_property_uint32_create(const char *key,
-                                                       apr_uint32_t uint32,
-                                                       apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_uint32_create(
+                                       const char *key, apr_uint32_t ui,
+                                       apr_pool_t *p);
 /**
  * Create a signed 64-bit long integer Bean Property.
  */
-extern struct bmx_property *bmx_property_int64_create(const char *key,
-                                                      apr_int64_t int64,
-                                                      apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_int64_create(
+                                       const char *key, apr_int64_t i,
+                                       apr_pool_t *p);
 /** 
  * Create an unsigned 64-bit long integer Bean Property.
  */ 
-extern struct bmx_property *bmx_property_uint64_create(const char *key,
-                                                       apr_uint64_t uint64,
-                                                       apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_uint64_create(
+                                       const char *key, apr_uint64_t ui,
+                                       apr_pool_t *p);
 /** 
  * Create a floating point Bean Property.
  */ 
-extern struct bmx_property *bmx_property_float_create(const char *key, float f,
-                                                      apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_float_create(
+                                       const char *key, float f,
+                                       apr_pool_t *p);
 /**
  * Create a double-precision floating point Bean Property.
  */
-extern struct bmx_property *bmx_property_double_create(const char *key,
-                                                       double d, apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_double_create(
+                                       const char *key, double d,
+                                       apr_pool_t *p);
 /**
  * Create a string (standard C-style string: null-terminated character array)
  * Bean Property.
  */ 
-extern struct bmx_property *bmx_property_string_create(const char *key,
-                                                       const char *s,
-                                                       apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_string_create(
+                                       const char *key, const char *s,
+                                       apr_pool_t *p);
 /**
  * Create a user-deined Bean Property.
  * @param key The key name to give this property.
@@ -193,11 +213,11 @@ extern struct bmx_property *bmx_property_string_create(const char *key,
  * @param p The pool from where this bean should be allocated.
  * @returns A new user-defined bmx_property bean object pointer.
  */
-extern struct bmx_property *bmx_property_generic_create(
-                                                 const char *key,
-                                                 void *value,
-                                                 bmx_property_print print_fn,
-                                                 apr_pool_t *p);
+BMX_DECLARE(struct bmx_property *) bmx_property_generic_create(
+                                       const char *key,
+                                       void *value,
+                                       bmx_property_print print_fn,
+                                       apr_pool_t *p);
 
 /**
  * An BMX Objectname represents the domain of the bean (the name) and a set
@@ -219,27 +239,27 @@ extern struct bmx_objectname bmx_query_all;
 /**
  * Create an bmx_objectname with the given domain.
  */
-extern void bmx_objectname_create(struct bmx_objectname **objectname,
-                                  const char *domain, apr_pool_t *pool);
+BMX_DECLARE(void) bmx_objectname_create(struct bmx_objectname **objectname,
+                                        const char *domain, apr_pool_t *pool);
 
 /**
  * Check if the given query matches the given objectname and return
  * non-zero if true, otherwise return zero.
  */
-extern int bmx_check_constraints(const struct bmx_objectname *query,
-                                 const struct bmx_objectname *objectname);
+BMX_DECLARE(int) bmx_check_constraints(const struct bmx_objectname *query,
+                                       const struct bmx_objectname *objectname);
 
 /**
  * Count how long the objectname would be if converted to a string.
  */
-apr_size_t bmx_objectname_strlen(const struct bmx_objectname *on);
+BMX_DECLARE(apr_size_t) bmx_objectname_strlen(const struct bmx_objectname *on);
 
 /**
  * Convert the objectname to a string, and store it into the buf string
  * which is of size buflen.
  */
-apr_size_t bmx_objectname_str(const struct bmx_objectname *on,
-                              char *buf, apr_size_t buflen);
+BMX_DECLARE(apr_size_t) bmx_objectname_str(const struct bmx_objectname *on,
+                                           char *buf, apr_size_t buflen);
 
 
 /**
@@ -255,45 +275,27 @@ struct bmx_bean {
 /**
  * Create an bmx_bean of the given objectname.
  */
-extern void bmx_bean_create(struct bmx_bean **bean,
-                            struct bmx_objectname *objectname,
-                            apr_pool_t *pool);
+BMX_DECLARE(void) bmx_bean_create(struct bmx_bean **bean,
+                                  struct bmx_objectname *objectname,
+                                  apr_pool_t *pool);
 
 /**
  * Initialize a pre-allocated bmx_bean with the given objectname.
  */
-extern void bmx_bean_init(struct bmx_bean *bean,
-                          struct bmx_objectname *objectname);
+BMX_DECLARE(void) bmx_bean_init(struct bmx_bean *bean,
+                                struct bmx_objectname *objectname);
 
 /**
  * Add a property to an bmx_bean.
  */
-extern void bmx_bean_prop_add(struct bmx_bean *bean,
-                              struct bmx_property *prop);
+BMX_DECLARE(void) bmx_bean_prop_add(struct bmx_bean *bean,
+                                    struct bmx_property *prop);
 
 /**
  * Fetch the objectname for the given bean.
  */
-extern const struct bmx_objectname *bmx_bean_get_objectname(
-                                        struct bmx_bean *bean);
-
-#if !defined(WIN32)
-#define BMX_DECLARE(type)            type
-#define BMX_DECLARE_NONSTD(type)     type
-#define BMX_DECLARE_DATA
-#elif defined(BMX_DECLARE_STATIC)
-#define BMX_DECLARE(type)            type __stdcall
-#define BMX_DECLARE_NONSTD(type)     type
-#define BMX_DECLARE_DATA
-#elif defined(BMX_DECLARE_EXPORT)
-#define BMX_DECLARE(type)            __declspec(dllexport) type __stdcall
-#define BMX_DECLARE_NONSTD(type)     __declspec(dllexport) type
-#define BMX_DECLARE_DATA             __declspec(dllexport)
-#else
-#define BMX_DECLARE(type)            __declspec(dllimport) type __stdcall
-#define BMX_DECLARE_NONSTD(type)     __declspec(dllimport) type
-#define BMX_DECLARE_DATA             __declspec(dllimport)
-#endif
+BMX_DECLARE(const struct bmx_objectname *)bmx_bean_get_objectname(
+                                              struct bmx_bean *bean);
 
 /**
  * Callback definition used by bmx plugins to print the contents of

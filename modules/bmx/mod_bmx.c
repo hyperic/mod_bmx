@@ -108,119 +108,121 @@ static char *property_print(apr_pool_t *p, struct bmx_property *prop)
 /**
  * Create a Boolean Bean Property.
  */
-struct bmx_property *bmx_property_boolean_create(const char *key, int boolean,
-                                                 apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_boolean_create(
+                                       const char *key, int b,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
     ret->value_type = BMX_BOOLEAN;
-    ret->value.boolean = boolean;
+    ret->value.boolean = b;
     return ret;
 }
 
 /**
  * Create a Byte (8-bit unsigned) Bean Property.
  */
-struct bmx_property *bmx_property_byte_create(const char *key,
-                                              apr_byte_t byte,
-                                              apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_byte_create(
+                                       const char *key, apr_byte_t b,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
     ret->value_type = BMX_BYTE;
-    ret->value.byte = byte;
+    ret->value.byte = b;
     return ret;
 }
 
 /**
  * Create a signed 16-bit short Bean Property.
  */
-struct bmx_property *bmx_property_int16_create(const char *key,
-                                               apr_int16_t int16,
-                                               apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_int16_create(
+                                       const char *key, apr_int16_t i,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
     ret->value_type = BMX_INT16;
-    ret->value.int16 = int16;
+    ret->value.int16 = i;
     return ret;
 }
 
 /**
  * Create an unsigned 16-bit short Bean Property.
  */
-struct bmx_property *bmx_property_uint16_create(const char *key,
-                                                apr_uint16_t uint16,
-                                                apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_uint16_create(
+                                       const char *key, apr_uint16_t ui,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
     ret->value_type = BMX_UINT16;
-    ret->value.uint16 = uint16;
+    ret->value.uint16 = ui;
     return ret;
 }
 
 /**
  * Create a signed 32-bit integer Bean Property.
  */
-struct bmx_property *bmx_property_int32_create(const char *key,
-                                               apr_int32_t int32,
-                                               apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_int32_create(
+                                       const char *key, apr_int32_t i,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
     ret->value_type = BMX_INT32;
-    ret->value.int32 = int32;
+    ret->value.int32 = i;
     return ret;
 }
 
 /**
  * Create an unsigned 32-bit integer Bean Property.
  */
-struct bmx_property *bmx_property_uint32_create(const char *key,
-                                                apr_uint32_t uint32,
-                                                apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_uint32_create(
+                                       const char *key, apr_uint32_t ui,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
     ret->value_type = BMX_UINT32;
-    ret->value.uint32 = uint32;
+    ret->value.uint32 = ui;
     return ret;
 }
 
 /**
  * Create a signed 64-bit long integer Bean Property.
  */
-struct bmx_property *bmx_property_int64_create(const char *key,
-                                               apr_int64_t int64,
-                                               apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_int64_create(
+                                       const char *key, apr_int64_t i,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
     ret->value_type = BMX_INT64;
-    ret->value.int64 = int64;
+    ret->value.int64 = i;
     return ret;
 }
 
 /**
  * Create an unsigned 64-bit long integer Bean Property.
  */
-struct bmx_property *bmx_property_uint64_create(const char *key,
-                                                apr_uint64_t uint64,
-                                                apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_uint64_create(
+                                       const char *key, apr_uint64_t ui,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
     ret->value_type = BMX_UINT64;
-    ret->value.uint64 = uint64;
+    ret->value.uint64 = ui;
     return ret;
 }
 
 /**
  * Create a floating point Bean Property.
  */
-struct bmx_property *bmx_property_float_create(const char *key, float f,
-                                               apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_float_create(
+                                       const char *key, float f,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
@@ -232,8 +234,9 @@ struct bmx_property *bmx_property_float_create(const char *key, float f,
 /**
  * Create a double-precision floating point Bean Property.
  */
-struct bmx_property *bmx_property_double_create(const char *key,
-                                                double d, apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_double_create(
+                                       const char *key, double d,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
@@ -246,9 +249,9 @@ struct bmx_property *bmx_property_double_create(const char *key,
  * Create a string (standard C-style string: null-terminated character array)
  * Bean Property.
  */
-struct bmx_property *bmx_property_string_create(const char *key,
-                                                const char *s,
-                                                apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_string_create(
+                                       const char *key, const char *s,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
@@ -266,10 +269,11 @@ struct bmx_property *bmx_property_string_create(const char *key,
  * @param p The pool from where this bean should be allocated.
  * @returns A new user-defined bmx_property bean object pointer.
  */
-struct bmx_property *bmx_property_generic_create(const char *key,
-                                                 void *value,
-                                                 bmx_property_print print_fn,
-                                                 apr_pool_t *p)
+BMX_DECLARE(struct bmx_property *) bmx_property_generic_create(
+                                       const char *key,
+                                       void *value,
+                                       bmx_property_print print_fn,
+                                       apr_pool_t *p)
 {
     struct bmx_property *ret = apr_pcalloc(p, sizeof(*ret));
     ret->key = apr_pstrdup(p, key);
@@ -286,9 +290,9 @@ struct bmx_property *bmx_property_generic_create(const char *key,
  * @param objectname The BMX Objectname for this new bean.
  * @param pool The pool from where this bean should be allocated.
  */
-void bmx_bean_create(struct bmx_bean **bean,
-                     struct bmx_objectname *objectname,
-                     apr_pool_t *pool)
+BMX_DECLARE(void) bmx_bean_create(struct bmx_bean **bean,
+                                  struct bmx_objectname *objectname,
+                                  apr_pool_t *pool)
 {
     struct bmx_bean *ret = apr_pcalloc(pool, sizeof(*ret));
     bmx_bean_init(ret, objectname);
@@ -301,8 +305,8 @@ void bmx_bean_create(struct bmx_bean **bean,
  * @param bean The pre-allocated bean object to initialize.
  * @param objectname The BMX Objectname for this new bean.
  */
-void bmx_bean_init(struct bmx_bean *bean,
-                   struct bmx_objectname *objectname)
+BMX_DECLARE(void) bmx_bean_init(struct bmx_bean *bean,
+                                struct bmx_objectname *objectname)
 {
     bean->objectname = objectname;
     APR_RING_INIT(&(bean->bean_props), bmx_property, link);
@@ -313,7 +317,8 @@ void bmx_bean_init(struct bmx_bean *bean,
  * @param bean The bean where the property will be added.
  * @param prop The property to add.
  */
-void bmx_bean_prop_add(struct bmx_bean *bean, struct bmx_property *prop)
+BMX_DECLARE(void) bmx_bean_prop_add(struct bmx_bean *bean,
+                                    struct bmx_property *prop)
 {
     APR_RING_INSERT_TAIL(&(bean->bean_props), prop, bmx_property, link);
 }
@@ -325,8 +330,8 @@ void bmx_bean_prop_add(struct bmx_bean *bean, struct bmx_property *prop)
  * @param domain The domain for the new objectname.
  * @param pool The pool from where this objectname should be allocated.
  */
-void bmx_objectname_create(struct bmx_objectname **objectname,
-                           const char *domain, apr_pool_t *pool)
+BMX_DECLARE(void) bmx_objectname_create(struct bmx_objectname **objectname,
+                                        const char *domain, apr_pool_t *pool)
 {
     struct bmx_objectname *ret = apr_pcalloc(pool, sizeof(*ret));
     ret->domain = apr_pstrdup(pool, domain);
@@ -339,7 +344,8 @@ void bmx_objectname_create(struct bmx_objectname **objectname,
  * @param bean The bean from which to fetch the objectname.
  * @returns The objectname from the given bean.
  */
-const struct bmx_objectname *bmx_bean_get_objectname(struct bmx_bean *bean)
+BMX_DECLARE(const struct bmx_objectname *) bmx_bean_get_objectname(
+                                               struct bmx_bean *bean)
 {
     return bean->objectname;
 }
@@ -370,8 +376,8 @@ static int bmx_check_constraints_iterator(void *rec, const char *key,
     }
 }
 
-int bmx_check_constraints(const struct bmx_objectname *query,
-                          const struct bmx_objectname *objectname)
+BMX_DECLARE(int) bmx_check_constraints(const struct bmx_objectname *query,
+                                       const struct bmx_objectname *objectname)
 {
     struct bmx_check_constraints_data data = { objectname->props, 0 };
 
@@ -517,7 +523,7 @@ static int bmx_objectname_strlen_iterator(void *rec, const char *key,
     return 1;
 }
 
-apr_size_t bmx_objectname_strlen(const struct bmx_objectname *on)
+BMX_DECLARE(apr_size_t) bmx_objectname_strlen(const struct bmx_objectname *on)
 {
     apr_size_t sz = 0;
     if (on) {
@@ -570,8 +576,8 @@ static int bmx_objectname_str_iterator(void *rec, const char *key,
     return 1;
 }
 
-apr_size_t bmx_objectname_str(const struct bmx_objectname *on,
-                              char *buf, apr_size_t buflen)
+BMX_DECLARE(apr_size_t) bmx_objectname_str(const struct bmx_objectname *on,
+                                           char *buf, apr_size_t buflen)
 {
     char *p = buf;
     if (on) {
