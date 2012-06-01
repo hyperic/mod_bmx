@@ -71,6 +71,17 @@
 #include "ap_listen.h"
 #include "scoreboard.h"
 
+#ifdef AP_NEED_SET_MUTEX_PERMS
+#include "unixd.h"
+#endif
+
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#if APR_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
 #include "apr_optional.h"
 #include "apr_strings.h"
 #include "apr_dbm.h"
@@ -539,7 +550,7 @@ static int vhost_data_reset(apr_dbm_t *dbm, server_rec *s, apr_pool_t *ptemp,
     /* otherwise reuse the previous record */
     else {
         memcpy(&vhost_data, value.dptr, sizeof(vhost_data));
-        if (ap_scoreboard_image->global->running_generation == 0) {
+        if (ap_my_generation == 0) {
             /* clear since-start parts */
             memset(&vhost_data.since_start, 0, sizeof(vhost_data.since_start));
             vhost_data.since_start.StartTime = now;
@@ -913,8 +924,9 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     server_rec *vhost;
     void *data = NULL;
     const char *userdata_key = "bmx_vhost_post_config";
+    const char *dbmfile1 = NULL, *dbmfile2 = NULL;
 
-    /* open a DBM to check that it can be created */
+    /* open a DBM to check that it can be created, see WARN below */
     rv = apr_dbm_open(&dbm, dbm_fname, APR_DBM_RWCREATE,
                       APR_OS_DEFAULT, ptemp);
     if (rv != APR_SUCCESS) {
@@ -923,14 +935,20 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    /* Check if this is the first run or a restart */
-    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-    if (data == NULL) {
-        apr_pool_userdata_set((const void *)1, userdata_key,
-                              apr_pool_cleanup_null, s->process->pool);
-        rv = OK;
-        goto out; /* skip the first pass through pre_config */
+#if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
+    /*
+     * We have to make sure the Apache child processes have access to
+     * the DBM file.  WARN: With apr_dbm_open_ex, apr_dbm_get_usednames_ex
+     * is required to determine the correct filenames.
+     */
+    if (geteuid() == 0 /* is superuser */) {
+        apr_dbm_get_usednames(ptemp, dbm_fname, &dbmfile1, &dbmfile2);
+	if (dbmfile1)
+            chown(dbmfile1, unixd_config.user_id, -1 /* no gid change */);
+	if (dbmfile2)
+            chown(dbmfile2, unixd_config.user_id, -1 /* no gid change */);
     }
+#endif
 
     /* create a mutex to protect the DBM */
     rv = apr_global_mutex_create(&dbmlock, dbmlock_fname, APR_LOCK_DEFAULT,
@@ -943,16 +961,34 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         goto out;
     }
 
+#ifdef AP_NEED_SET_MUTEX_PERMS
+    rv = unixd_set_global_mutex_perms(dbmlock);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                     "mod_bmx_vhost could not set permissions on global mutex"
+                     " for DBM in file '%s'; check User and Group directives",
+                     dbmlock_fname);
+        return rv;
+    }
+#endif
+
+    /* Check if this is the first run or a restart */
+    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+    if (data == NULL) {
+        apr_pool_userdata_set((const void *)1, userdata_key,
+                              apr_pool_cleanup_null, s->process->pool);
+        rv = OK;
+        goto out; /* skip the first pass through pre_config */
+    }
+
     /* create a server config for each vhost */
     for (vhost = s; vhost; vhost = vhost->next) {
         /* create our module config for this server */
         void *scfg = bmx_vhost_create_scfg(pconf, vhost);
         ap_set_module_config(vhost->module_config, &bmx_vhost_module, scfg);
 
-        /* reset the DBM record */
+        /* reset the DBM record - global server s is used for error logging */
         rv = vhost_data_reset(dbm, s, ptemp, scfg);
-        if (rv != APR_SUCCESS)
-            goto out;
     }
 
     /* Create a global server config */
@@ -1105,9 +1141,9 @@ static void bmx_vhost_register_hooks(apr_pool_t *p)
 {
     ap_hook_pre_config(bmx_vhost_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(bmx_vhost_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init(bmx_vhost_child_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_log_transaction(bmx_vhost_log_transaction, NULL, NULL,
                             APR_HOOK_MIDDLE);
-    ap_hook_child_init(bmx_vhost_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const command_rec bmx_vhost_cmds[] =

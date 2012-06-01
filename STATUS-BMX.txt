@@ -151,3 +151,11 @@ Version 0.9.3:
 
 * Introduce windows build schema, mod_bmx BMX_DECLARE exports
 
+Version 0.9.4:
+
+* Correct ownership of dbm files and mutex for access by the worker processes
+
+* Test-access the mutex in addition to the dbm during config preflight
+
+* Undo 2.4 server generation logic at startup; scoreboard does not exist yet
+
