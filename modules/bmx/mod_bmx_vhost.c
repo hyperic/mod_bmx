@@ -69,6 +69,7 @@
 #include "http_protocol.h"
 #include "http_request.h"
 #include "ap_listen.h"
+#include "ap_mpm.h"
 #include "scoreboard.h"
 
 #ifdef AP_NEED_SET_MUTEX_PERMS
@@ -928,8 +929,6 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     apr_status_t rv = 0;
     int startup;
     server_rec *vhost;
-    void *data = NULL;
-    const char *userdata_key = "bmx_vhost_post_config";
     const char *dbmfile1 = NULL, *dbmfile2 = NULL;
 
     /* open a DBM to check that it can be created, see WARN below */
@@ -978,16 +977,11 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
 #endif
 
-    /* Check if this is the first run or a restart */
-    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-    if (data == NULL) {
-        apr_pool_userdata_set((const void *)1, userdata_key,
-                              apr_pool_cleanup_null, s->process->pool);
-        startup = 1;
-    }
-    else {
+    /* Check if this is the first run or a restart, working since 2.0.49 */
+    if (ap_mpm_query(AP_MPMQ_MPM_STATE, &startup) == APR_SUCCESS)
+        startup = (startup == AP_MPMQ_STARTING);
+    else
         startup = 0;
-    }
 
     /* create a server config for each vhost */
     for (vhost = s; vhost; vhost = vhost->next) {
