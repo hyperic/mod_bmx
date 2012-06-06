@@ -14,7 +14,7 @@ Requirements:
 -------------
 
 Building from the distributed tarball:
-* Apache 2.0.36+ or 2.2.0+
+* Apache 2.0.49+, 2.2.0+, 2.4.0+
     - with headers, DSO support (mod_so, enabled with --enable-so), and apxs
 * GNU Make
 * C Compiler (tested with GNU GCC)
