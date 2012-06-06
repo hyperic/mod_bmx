@@ -524,7 +524,7 @@ static void *bmx_vhost_create_scfg(apr_pool_t *p, server_rec *s)
  * or allocate an entirely new record if the record did not already exist.
  */
 static int vhost_data_reset(apr_dbm_t *dbm, server_rec *s, apr_pool_t *ptemp,
-                            const struct bmx_vhost_scfg *scfg)
+                            const struct bmx_vhost_scfg *scfg, int startup)
 {
     int rv = APR_SUCCESS;
     apr_datum_t value;
@@ -550,7 +550,7 @@ static int vhost_data_reset(apr_dbm_t *dbm, server_rec *s, apr_pool_t *ptemp,
     /* otherwise reuse the previous record */
     else {
         memcpy(&vhost_data, value.dptr, sizeof(vhost_data));
-        if (ap_my_generation == 0) {
+        if (startup) {
             /* clear since-start parts */
             memset(&vhost_data.since_start, 0, sizeof(vhost_data.since_start));
             vhost_data.since_start.StartTime = now;
@@ -921,6 +921,7 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                  apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t rv = 0;
+    int startup;
     server_rec *vhost;
     void *data = NULL;
     const char *userdata_key = "bmx_vhost_post_config";
@@ -977,8 +978,10 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     if (data == NULL) {
         apr_pool_userdata_set((const void *)1, userdata_key,
                               apr_pool_cleanup_null, s->process->pool);
-        rv = OK;
-        goto out; /* skip the first pass through pre_config */
+        startup = 1;
+    }
+    else {
+        startup = 0;
     }
 
     /* create a server config for each vhost */
@@ -988,13 +991,13 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         ap_set_module_config(vhost->module_config, &bmx_vhost_module, scfg);
 
         /* reset the DBM record - global server s is used for error logging */
-        rv = vhost_data_reset(dbm, s, ptemp, scfg);
+        rv = vhost_data_reset(dbm, s, ptemp, scfg, startup);
     }
 
     /* Create a global server config */
     create_global_scfg(pconf);
 
-    rv = vhost_data_reset(dbm, s, ptemp, global_scfg);
+    rv = vhost_data_reset(dbm, s, ptemp, global_scfg, startup);
     if (rv != APR_SUCCESS)
         goto out;
 
