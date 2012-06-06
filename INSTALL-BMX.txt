@@ -20,25 +20,16 @@ Building from the distributed tarball:
 * C Compiler (tested with GNU GCC)
 * Perl (for apxs)
 
-Building from CVS:
-(in addition to the above)
-* autoconf 2.59+
-* (optional) doxygen
-
 Building Instructions:
 ----------------------
 
 1. Install Apache (from RPM or by hand or however you prefer)
 
+2. If the desired 'apxs' is in your PATH, then simply run
+     ./configure.apxs
 
-2. (CVS Builders Only) If you are building from CVS you'll need to generate
-   your configure script by running:
-    ./buildconf
-
-3. If 'apxs' is in your PATH, then simply run
-    ./configure
-   If 'apxs' is not in your PATH, put it in your PATH or run
-    ./configure --with-apxs2=/path/to/your/apxs
+3. If 'apxs' is not in your PATH, or you are building for a specific httpd
+     APXS=/path/to/your/apxs ./configure.apxs
 
 4. Compile it by running
     make
