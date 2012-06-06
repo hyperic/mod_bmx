@@ -73,6 +73,11 @@
 
 #ifdef AP_NEED_SET_MUTEX_PERMS
 #include "unixd.h"
+
+#if MODULE_MAGIC_NUMBER_MAJOR >= 20081201
+#define unixd_config ap_unixd_config
+#define unixd_set_global_mutex_perms ap_unixd_set_global_mutex_perms
+#endif
 #endif
 
 #if APR_HAVE_UNISTD_H
