@@ -157,5 +157,5 @@ Version 0.9.4:
 
 * Test-access the mutex in addition to the dbm during config preflight
 
-* Undo 2.4 server generation logic at startup; scoreboard does not exist yet
+* Modified 2.4 test for server startup, since scoreboard didn't exist yet
 
