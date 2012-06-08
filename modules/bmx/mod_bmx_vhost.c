@@ -94,6 +94,8 @@
 #include "apr_global_mutex.h"
 #include "mod_bmx.h"
 
+#include "mod_status.h"
+
 /* --------------------------------------------------------------------
  * Global definitions
  * -------------------------------------------------------------------- */
@@ -906,10 +908,62 @@ static int bmx_vhost_query_hook(request_rec *r,
             print_bean_fn(r, &scfg->vhost_info);
             rv = OK;
         }
-
     }
 
     return rv;
+}
+
+/*
+ *  BMX Virtual Host Extension to mod_status
+ */
+static int bmx_vhost_status_hook(request_rec *r, int flags)
+{
+    if (flags & AP_STATUS_SHORT)
+        return OK;
+
+#ifdef TODO_STATUS_REPORT
+    /* status output, will probably introduce a custom print_bean_fn e.g. */
+        ap_rputs("\n\n<table border=\"0\"><tr>"
+                 "<th>SSes</th><th>Timeout</th><th>Method</th>"
+                 "</tr>\n", r);
+        ap_rprintf(r, "<tr><td>%s</td><td>%s</td></tr>\n", name, value);
+        ap_rputs("</table>\n", r);
+
+    int rv, rv2;
+    server_rec *s;
+
+    ap_rputs("<hr />\n<h1>BMX Virtual Host Tracking Summary</h1>\n", r);
+
+    /* check the global too */
+    rv = process_vhost_query(r, query, print_bean_fn, global_scfg);
+    if (rv != OK && rv != DECLINED) {
+        /* we hit some error (reported already) */
+        return rv;
+    }
+
+    for (s = r->connection->base_server; s; s = s->next) {
+        struct bmx_vhost_scfg *scfg = ap_get_module_config(s->module_config,
+                                                           &bmx_vhost_module);
+        /* Print out the mod_bmx_vhost:Type=forever/since-start/since-restart
+           beans for this vhost */
+        rv2 = process_vhost_query(r, query, print_bean_fn, scfg);
+        if (rv2 == OK) {
+            rv = OK;
+        } else if (rv2 != DECLINED) {
+            /* we hit some error (reported already) */
+            return rv2;
+        }
+
+        if (bmx_check_constraints(query,
+                                  bmx_bean_get_objectname(&scfg->vhost_info))) {
+            print_bean_fn(r, &scfg->vhost_info);
+            rv = OK;
+        }
+
+    }
+#endif
+
+    return OK;
 }
 
 static int bmx_vhost_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
@@ -919,6 +973,8 @@ static int bmx_vhost_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     dbmlock_fname = ap_server_root_relative(pconf, DBMLOCK_FNAME);
 
     APR_OPTIONAL_HOOK(bmx, query_hook, bmx_vhost_query_hook, NULL, NULL,
+                      APR_HOOK_MIDDLE);
+    APR_OPTIONAL_HOOK(ap, status_hook, bmx_vhost_status_hook, NULL, NULL,
                       APR_HOOK_MIDDLE);
     return OK;
 }
@@ -930,6 +986,7 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     int startup;
     server_rec *vhost;
     const char *dbmfile1 = NULL, *dbmfile2 = NULL;
+    const char *userdata_key = "bmx_vhost_post_config";
 
     /* open a DBM to check that it can be created, see WARN below */
     rv = apr_dbm_open(&dbm, dbm_fname, APR_DBM_RWCREATE,
@@ -977,11 +1034,22 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
 #endif
 
-    /* Check if this is the first run or a restart, working since 2.0.49 */
-    if (ap_mpm_query(AP_MPMQ_MPM_STATE, &startup) == APR_SUCCESS)
-        startup = (startup == AP_MPMQ_STARTING);
-    else
-        startup = 0;
+    /* Check if this is configtest or a preflight phase, clear nothing! */
+    apr_pool_userdata_get((void *)&startup, userdata_key, s->process->pool);
+    if (!startup) {
+        startup = 1;
+        apr_pool_userdata_set((const void *)&startup, userdata_key,
+                              apr_pool_cleanup_null, s->process->pool);
+        goto out;
+    }
+
+#if MODULE_MAGIC_NUMBER_MAJOR >= 20090401
+    /* Check if this is the first generation supported in 2.3.3+ */
+    if (ap_mpm_query(AP_MPMQ_GENERATION, &startup) == APR_SUCCESS)
+	startup = (startup == 0);
+#else
+    startup = (ap_my_generation == 0);
+#endif
 
     /* create a server config for each vhost */
     for (vhost = s; vhost; vhost = vhost->next) {
@@ -997,8 +1065,6 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     create_global_scfg(pconf);
 
     rv = vhost_data_reset(dbm, s, ptemp, global_scfg, startup);
-    if (rv != APR_SUCCESS)
-        goto out;
 
 out:
     apr_dbm_close(dbm);
