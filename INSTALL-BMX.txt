@@ -43,6 +43,36 @@ Building Instructions:
 - See the "Configuration" section below for instructions on setting up your
   httpd.conf before starting Apache for the first time.
 
+
+Alternate in-tree build
+-----------------------
+
+1. Unpack the httpd sources
+
+2. Unpack the bmx sources on top of it, such that modules/bmx/ is
+   aligned with the other modules/ trees. 
+
+Then, either;
+
+3.0. Re- ./buildconf to include the modules/bmx/ tree in the standard 
+     build ./configure options.
+
+3.1. ./configure --enable-bmx --enable-bmx-vhost --enable-bmx-status
+     then make and make install as usual (or include bmx etc in the module
+     list with traditional --enable-[modules|mods-static|mods-shared] options).
+ 
+- or -
+    
+3.0. [WARNING: This option may not behave correctly for multiple modules]
+     To build the modules in-tree, without the re- ./buildconf step, when
+     building httpd 2.2 and later, you may simply include;
+
+     ./configure --with-module=bmx:bmx \
+                 --with-module=bmx:bmx_status \
+                 --with-module=bmx:bmx_vhost \
+     ...
+
+
 Building Documentation
 ----------------------
 
@@ -98,10 +128,8 @@ LoadModule (required for each BMX plugin needed)
     for example:
 
     LoadModule bmx_module         modules/mod_bmx.so
-    LoadModule bmx_example_module modules/mod_bmx_example.so
     LoadModule bmx_status_module  modules/mod_bmx_status.so
     LoadModule bmx_vhost_module   modules/mod_bmx_vhost.so
-
 
 BMXVHostDBMFilename (optional)
     Use BMXVhostDBMFilename to specify the name of the file where
