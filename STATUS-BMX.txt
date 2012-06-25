@@ -2,6 +2,7 @@ mod_bmx 1.0.0 STATUS:                                          -*-text-*-
 
 Releases:
 
+* 0.9.4 - Tagged RC5 2012-06-25
 * 0.9.3 - Tagged RC4 2012-03-14
 * 0.9.2 - Tagged RC3 2012-03-01
 * 0.9.1 - Tagged RC2 2007-11-05
@@ -22,15 +23,26 @@ Releases:
 
 Release Showstoppers:
 
+Wishlist for 1.0.0 release:
+
+* Format mod_status html output to represent mod_bmx_vhost data within
+  the server-status generator.  Perhaps allow query of named host/port
+  from mod_status query args, much as the bmx handler provides.
+
+* Better data collection by request method and response types, quite limited
+  today in recognized buckets.
+
+* Correct request data collection; missing HTTP request/header byte counts. 
+
+* Adopt socache APIs for storing persistent data, such as selection between
+  a DBM or SHM, for httpd 2.4 and beyond.  Use this as well in 2.2 if the
+  user toggles the option (as socache modules have been backported).
+
+* Adopt ap_mutex management for transparent selection of locking mechanics
+  for httpd 2.4 and beyond.  Use this as well in 2.2 if user toggles the
+  option (as the mod_mutex backport provides this option).
+
 Wishlist:
-
-* Implement plugin interface to allow new response syntaxes, such as XML.
-  (Currently it only supports a text/plain properties-style response.
-
-* Provide better APIs for storing persistent data, such as transparently to
-  a DBM or SHM.
-
-* Consider using SHM for transient metrics in mod_bmx_vhost instead of DBMs.
 
 * Add support for disabling/enabling for particular VHosts in mod_bmx_vhost.
 
@@ -38,12 +50,13 @@ Wishlist:
   serialize all requests (since now they all depend on the same lock).
   Solving this will improve overall server scalability.
 
-* Implement XML response type.
+* Server generation logic may require more thought for Event and other new
+  asynchronous MPMs; c.f. the current state of mod_status for validation.
 
-* Server generation moves into the mpm query and potentially takes on new
-  meanings; have replaced ap_my_generation with ap_scoreboard_image->global's
-  running_generation, but this may require more thought for Event and other
-  new asynchronous MPMs; c.f. the current state of mod_status for validation.
+* Implement plugin interface to allow new response syntaxes, such as XML.
+  (Currently it only supports a text/plain properties-style response.
+
+* Implement XML response type?
 
 DONE:
 
@@ -157,5 +170,10 @@ Version 0.9.4:
 
 * Test-access the mutex in addition to the dbm during config preflight
 
+* Avoid resetting data during a configtest or failed preflight
+
 * Modified 2.4 test for server startup, since scoreboard didn't exist yet
+  (corrects a regression in 0.9.3 for all httpd versions)
+
+* Introduced mod_status output hook facilities (emits no output, yet).
 
