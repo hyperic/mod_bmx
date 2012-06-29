@@ -32,7 +32,7 @@
 
 #define MODBMX_VERSION_MAJOR  0
 #define MODBMX_VERSION_MINOR  9
-#define MODBMX_VERSION_SUBVER 5
+#define MODBMX_VERSION_SUBVER 6
 #define MODBMX_VERSION_DEV    1
 
 #if MODBMX_VERSION_DEV
@@ -302,9 +302,11 @@ BMX_DECLARE(const struct bmx_objectname *)bmx_bean_get_objectname(
 * with the server data for this VHost (so we can retrieve it later when
 * responding to BMX Queries).
 * @param p The pool out of which to allocate needed data.
-* @param s The server_rec containing this VHost's data.
+* @param hostname The hostname of this bean.
+* @param port The port number of this bean.
 */
-static void *bmx_vhost_create_scfg(apr_pool_t *p, server_rec *s);
+struct bmx_vhost_scfg *bmx_vhost_create_scfg(apr_pool_t *p, 
+                                             const char *hostname, int port);
 
 /**
  * Callback definition used by bmx plugins to print the contents of

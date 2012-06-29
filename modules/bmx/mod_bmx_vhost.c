@@ -192,11 +192,7 @@ struct bmx_vhost_scfg {
  * The global BMX Vhost Server Config. Unlike all other VHosts, this object
  * is not associated with a VHost entry so we must store it globally.
  */
-static struct bmx_vhost_scfg _global_scfg;
-/**
- * A pointer to the global BMX VHost Server Config.
- */
-static struct bmx_vhost_scfg *global_scfg = &_global_scfg;
+static struct bmx_vhost_scfg *global_scfg;
 
 /**
  * The metrics that are recorded for each VHost and for each Timespan.
@@ -342,43 +338,10 @@ static int create_scfg_objectname(apr_pool_t *p,
     return rv;
 }
 
-/**
- * Create the DBM key to use to refer to the data for the given VHost.
- * @param p The pool out of which to allocate the DBM Key.
- * @param s The server_rec representing this VHost.
- * @param key A pointer to an apr_datum_t object where we will store our
- *        key datum.
- * @returns Zero if succesful (currently it will always return zero)
- */
-static int create_vhost_key(apr_pool_t *p, server_rec *s,
-                            apr_datum_t *key)
-{
-    int rv = 0;
-
-    key->dptr = apr_psprintf(p, "%s-%s:%d", KEY_PREFIX, s->server_hostname, s->port);
-    key->dsize = strlen(key->dptr);
-
-    return rv;
-}
-
 /** Name for the special Global VHost Bean */
 #define GLOBAL_SERVER_NAME "_GLOBAL_"
 /** Port used for the special Global VHost Bean */
 #define GLOBAL_PORT 0
-/** Create the special Global VHost Server Config */
-static void create_global_scfg(apr_pool_t *p)
-{
-    create_scfg_objectname(p, &global_scfg->forever, FOREVER,
-                           GLOBAL_SERVER_NAME, GLOBAL_PORT);
-    create_scfg_objectname(p, &global_scfg->since_start, SINCE_START,
-                           GLOBAL_SERVER_NAME, GLOBAL_PORT);
-    create_scfg_objectname(p, &global_scfg->since_restart, SINCE_RESTART,
-                           GLOBAL_SERVER_NAME, GLOBAL_PORT);
-
-    global_scfg->key.dptr = apr_psprintf(p, "%s-%s",
-                                         KEY_PREFIX, GLOBAL_SERVER_NAME);
-    global_scfg->key.dsize = strlen(global_scfg->key.dptr);
-}
 
 /**
  * Create a string representing all the Listen addresses used by this
@@ -464,9 +427,7 @@ static char *vhost_server_aliases_str(apr_pool_t *p, server_rec *s)
  */
 static void create_vhost_info_bean(apr_pool_t *p,
                                    struct bmx_bean *vhost_info,
-                                   server_rec *s,
-                                   const char *hostname,
-                                   short port)
+                                   server_rec *s)
 {
     const char *server_name;
     const char *listen_addresses;
@@ -474,10 +435,10 @@ static void create_vhost_info_bean(apr_pool_t *p,
     struct bmx_objectname *vhost_info_objn;
 
     /* create the ServerName */
-    if (port && hostname)
-        server_name = apr_psprintf(p, "%s:%d", hostname, port);
-    else if (hostname)
-        server_name = hostname;
+    if (s->port && s->server_hostname)
+        server_name = apr_psprintf(p, "%s:%d", s->server_hostname, s->port);
+    else if (s->server_hostname)
+        server_name = s->server_hostname;
     else
         server_name = "";
 
@@ -491,9 +452,9 @@ static void create_vhost_info_bean(apr_pool_t *p,
     /* create the objectname for this vhost's bean */
     bmx_objectname_create(&vhost_info_objn, BMX_VHOST_DOMAIN, p);
     apr_table_set(vhost_info_objn->props, "Type", BMX_VHOST_INFO_TYPE);
-    apr_table_set(vhost_info_objn->props, "Host", hostname);
+    apr_table_set(vhost_info_objn->props, "Host", s->server_hostname);
     apr_table_set(vhost_info_objn->props, "Port",
-                  port ? apr_psprintf(p, "%d", port) : ANY_PORT);
+                  s->port ? apr_psprintf(p, "%d", s->port) : ANY_PORT);
 
     bmx_bean_init(vhost_info, vhost_info_objn);
 
@@ -510,27 +471,26 @@ static void create_vhost_info_bean(apr_pool_t *p,
  * with the server data for this VHost (so we can retrieve it later when
  * responding to BMX Queries).
  * @param p The pool out of which to allocate needed data.
- * @param s The server_rec containing this VHost's data.
+ * @param hostname The hostname to associate this VHost's data.
+ * @param hostname The port to associate this VHost's data.
  */
-static void *bmx_vhost_create_scfg(apr_pool_t *p, server_rec *s)
+struct bmx_vhost_scfg *bmx_vhost_create_scfg(apr_pool_t *p, 
+                                             const char *hostname, int port)
 {
-    struct bmx_vhost_scfg *scfg;
-    const char *hostname = s->server_hostname;
-    short port = s->port;
-
-    scfg = apr_pcalloc(p, sizeof(*scfg));
+    struct bmx_vhost_scfg *scfg = apr_pcalloc(p, sizeof(*scfg));
 
     create_scfg_objectname(p, &scfg->forever, FOREVER, hostname, port);
     create_scfg_objectname(p, &scfg->since_start, SINCE_START, hostname, port);
     create_scfg_objectname(p, &scfg->since_restart, SINCE_RESTART, hostname,
                            port);
 
-    create_vhost_info_bean(p, &scfg->vhost_info, s, hostname, port);
+    /* Create the DBM key to use to refer to the data for the given VHost. */
+    scfg->key.dptr = apr_psprintf(p, "%s-%s:%d", KEY_PREFIX, hostname, port);
+    scfg->key.dsize = strlen(scfg->key.dptr);
 
-    create_vhost_key(p, s, &scfg->key);
-
-    return (void *)scfg;
+    return scfg;
 }
+
 
 /**
  * Fetch the vhost data for a given VHost and reset the 'since-restart" data
@@ -987,12 +947,11 @@ static int bmx_vhost_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                                  apr_pool_t *ptemp, server_rec *s)
 {
-    apr_status_t rv = 0;
-    int startup;
+    const char *preflight_key = "bmx_vhost_preflight";
+    void *preflight = NULL;
     server_rec *vhost;
-    const char *dbmfile1 = NULL, *dbmfile2 = NULL;
-    const char *userdata_key = "bmx_vhost_post_config";
-    void *scfg;
+    int startup;
+    apr_status_t rv;
 
     /* set the main server */
     main_server = s;
@@ -1012,7 +971,9 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
      * the DBM file.  WARN: With apr_dbm_open_ex, apr_dbm_get_usednames_ex
      * is required to determine the correct filenames.
      */
-    if (geteuid() == 0 /* is superuser */) {
+    if (geteuid() == 0 /* is superuser */)
+    {
+        const char *dbmfile1 = NULL, *dbmfile2 = NULL;
         apr_dbm_get_usednames(ptemp, dbm_fname, &dbmfile1, &dbmfile2);
 	if (dbmfile1)
             chown(dbmfile1, unixd_config.user_id, -1 /* no gid change */);
@@ -1039,16 +1000,17 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                      "mod_bmx_vhost could not set permissions on global mutex"
                      " for DBM in file '%s'; check User and Group directives",
                      dbmlock_fname);
-        return rv;
+        rv = HTTP_INTERNAL_SERVER_ERROR;
+        goto out;
     }
 #endif
 
     /* Check if this is configtest or a preflight phase, clear nothing! */
-    apr_pool_userdata_get((void *)&startup, userdata_key, s->process->pool);
-    if (!startup) {
-        startup = 1;
-        apr_pool_userdata_set((const void *)&startup, userdata_key,
+    apr_pool_userdata_get(&preflight, preflight_key, s->process->pool);
+    if (!preflight) {
+        apr_pool_userdata_set(preflight_key, preflight_key,
                               apr_pool_cleanup_null, s->process->pool);
+        rv = OK;
         goto out;
     }
 
@@ -1060,20 +1022,33 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     startup = (ap_my_generation == 0);
 #endif
 
+    /* Create the global server config */
+    global_scfg = bmx_vhost_create_scfg(pconf, GLOBAL_SERVER_NAME, GLOBAL_PORT);
+
+    rv = vhost_data_reset(dbm, s, ptemp, global_scfg, startup);
+    if (rv != APR_SUCCESS) {
+         rv = HTTP_INTERNAL_SERVER_ERROR;
+         goto out;
+    }
+
     /* create a server config for each vhost */
-    for (vhost = s; vhost; vhost = vhost->next) {
+    for (vhost = s; vhost; vhost = vhost->next)
+    {
         /* create our module config for this server */
-        scfg = bmx_vhost_create_scfg(pconf, vhost);
+        struct bmx_vhost_scfg *scfg;
+        scfg = bmx_vhost_create_scfg(pconf, vhost->server_hostname, vhost->port);
         ap_set_module_config(vhost->module_config, &bmx_vhost_module, scfg);
+
+        /* create our info bean for this server (none for global) */
+        create_vhost_info_bean(pconf, &scfg->vhost_info, vhost);
 
         /* reset the DBM record - global server s is used for error logging */
         rv = vhost_data_reset(dbm, s, ptemp, scfg, startup);
+        if (rv != APR_SUCCESS) {
+             rv = HTTP_INTERNAL_SERVER_ERROR;
+             goto out;
+        }
     }
-
-    /* Create a global server config */
-    create_global_scfg(pconf);
-
-    rv = vhost_data_reset(dbm, s, ptemp, global_scfg, startup);
 
 out:
     apr_dbm_close(dbm);
