@@ -25,6 +25,9 @@ Release Showstoppers:
 
 Wishlist for 1.0.0 release:
 
+* Drop duplicate 'global' record keeping; either the caller or bmx/status
+  reporting sections should sum that tally, reducing the lock hold time.
+
 * Format mod_status html output to represent mod_bmx_vhost data within
   the server-status generator.  Perhaps allow query of named host/port
   from mod_status query args, much as the bmx handler provides.
@@ -176,4 +179,9 @@ Version 0.9.4:
   (corrects a regression in 0.9.3 for all httpd versions)
 
 * Introduced mod_status output hook facilities (emits no output, yet).
+
+Version 0.9.5:
+
+* Refactored startup hook code for legibility and hunt for a crash-bug
+  post-config startup regression in 0.9.4 code at -O3.
 
