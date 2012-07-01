@@ -2,6 +2,7 @@ mod_bmx 1.0.0 STATUS:                                          -*-text-*-
 
 Releases:
 
+* 0.9.5 - Tagged RC6 2012-06-30
 * 0.9.4 - Tagged RC5 2012-06-25
 * 0.9.3 - Tagged RC4 2012-03-14
 * 0.9.2 - Tagged RC3 2012-03-01
@@ -182,6 +183,7 @@ Version 0.9.4:
 
 Version 0.9.5:
 
-* Refactored startup hook code for legibility and hunt for a crash-bug
-  post-config startup regression in 0.9.4 code at -O3.
+* Refactored startup hook code for legibility, and to hunt for a crash-bug
+  startup regression in the post-config 0.9.4 code at optimization level -O3.
+
 
