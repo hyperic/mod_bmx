@@ -148,6 +148,11 @@ static apr_global_mutex_t *dbmlock;
  */
 static apr_dbm_t *dbm;
 
+/*
+ * Main server
+ */
+static server_rec *main_server = NULL;
+
 /**
  * The server-level module config for mod_bmx_vhost contains one reusable
  * objectname for each type of metric lifetime.
@@ -340,7 +345,7 @@ static int create_scfg_objectname(apr_pool_t *p,
 /**
  * Create the DBM key to use to refer to the data for the given VHost.
  * @param p The pool out of which to allocate the DBM Key.
- * @param s The server_rec representing this VHost.
+ * @param s The server_rec representFing this VHost.
  * @param key A pointer to an apr_datum_t object where we will store our
  *        key datum.
  * @returns Zero if succesful (currently it will always return zero)
@@ -427,6 +432,24 @@ static char *vhost_listen_addresses_str(apr_pool_t *p, server_rec *s)
     return str;
 }
 
+static void vhost_port_str(apr_port_t* port, server_rec* s)
+{
+    apr_ssize_t slen = 0;
+    char *str = NULL, *pstr;
+    struct server_addr_rec *sar;
+    int first = 1;
+
+    for (sar = s->addrs; sar; sar = sar->next) {
+        if (sar->host_addr) {
+            struct apr_sockaddr_t *addr = sar->host_addr;
+            if (addr->hostname && addr->port) {
+                *port = addr->port;
+                continue;
+            }
+        }
+    }
+}
+
 /**
  * Create a string representing all the ServerAlias values used by this VHost.
  * @param p The pool where the string is to be allocated.
@@ -472,7 +495,7 @@ static void create_vhost_info_bean(apr_pool_t *p,
     if (port && hostname)
         server_name = apr_psprintf(p, "%s:%d", hostname, port);
     else if (hostname)
-        server_name = hostname;
+         server_name = hostname;
     else
         server_name = "";
 
@@ -488,7 +511,8 @@ static void create_vhost_info_bean(apr_pool_t *p,
     apr_table_set(vhost_info_objn->props, "Type", BMX_VHOST_INFO_TYPE);
     apr_table_set(vhost_info_objn->props, "Host", hostname);
     apr_table_set(vhost_info_objn->props, "Port",
-                  port ? apr_psprintf(p, "%d", port) : ANY_PORT);
+                  port ? apr_psprintf(p, "%d", port)
+                   : ANY_PORT);
 
     bmx_bean_init(vhost_info, vhost_info_objn);
 
@@ -890,12 +914,13 @@ static int bmx_vhost_query_hook(request_rec *r,
         return rv;
     }
 
-    for (s = r->connection->base_server; s; s = s->next) {
+    for (s = main_server; s; s = s->next) {
         struct bmx_vhost_scfg *scfg = ap_get_module_config(s->module_config,
                                                            &bmx_vhost_module);
         /* Print out the mod_bmx_vhost:Type=forever/since-start/since-restart
            beans for this vhost */
         rv2 = process_vhost_query(r, query, print_bean_fn, scfg);
+
         if (rv2 == OK) {
             rv = OK;
         } else if (rv2 != DECLINED) {
@@ -987,6 +1012,7 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     server_rec *vhost;
     const char *dbmfile1 = NULL, *dbmfile2 = NULL;
     const char *userdata_key = "bmx_vhost_post_config";
+    apr_port_t port;
 
     /* open a DBM to check that it can be created, see WARN below */
     rv = apr_dbm_open(&dbm, dbm_fname, APR_DBM_RWCREATE,
@@ -1050,9 +1076,13 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 #else
     startup = (ap_my_generation == 0);
 #endif
-
     /* create a server config for each vhost */
     for (vhost = s; vhost; vhost = vhost->next) {
+
+        /* Define vhost port */
+        vhost_port_str(&port, vhost);
+        vhost->port = port;
+
         /* create our module config for this server */
         void *scfg = bmx_vhost_create_scfg(pconf, vhost);
         ap_set_module_config(vhost->module_config, &bmx_vhost_module, scfg);
@@ -1068,6 +1098,7 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
 out:
     apr_dbm_close(dbm);
+
     return rv;
 }
 
@@ -1193,6 +1224,7 @@ error:
 static void bmx_vhost_child_init(apr_pool_t *pchild, server_rec *s)
 {
     int rv = 0;
+    main_server = s;
     rv = apr_global_mutex_child_init(&dbmlock, dbmlock_fname, pchild);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s, "Failed to re-open "
