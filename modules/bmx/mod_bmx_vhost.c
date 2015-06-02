@@ -435,7 +435,7 @@ static char *vhost_listen_addresses_str(apr_pool_t *p, server_rec *s)
 static void vhost_port_str(apr_port_t* port, server_rec* s)
 {
     apr_ssize_t slen = 0;
-    char *str = NULL, *pstr;
+    char *str = NULL;
     struct server_addr_rec *sar;
     int first = 1;
 
@@ -1013,6 +1013,7 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     const char *dbmfile1 = NULL, *dbmfile2 = NULL;
     const char *userdata_key = "bmx_vhost_post_config";
     apr_port_t port;
+    void *scfg;
 
     /* open a DBM to check that it can be created, see WARN below */
     rv = apr_dbm_open(&dbm, dbm_fname, APR_DBM_RWCREATE,
@@ -1084,7 +1085,7 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         vhost->port = port;
 
         /* create our module config for this server */
-        void *scfg = bmx_vhost_create_scfg(pconf, vhost);
+        scfg = bmx_vhost_create_scfg(pconf, vhost);
         ap_set_module_config(vhost->module_config, &bmx_vhost_module, scfg);
 
         /* reset the DBM record - global server s is used for error logging */
