@@ -298,6 +298,15 @@ BMX_DECLARE(const struct bmx_objectname *)bmx_bean_get_objectname(
                                               struct bmx_bean *bean);
 
 /**
+* Create the Server Config Bean for this VHost and associate the data
+* with the server data for this VHost (so we can retrieve it later when
+* responding to BMX Queries).
+* @param p The pool out of which to allocate needed data.
+* @param s The server_rec containing this VHost's data.
+*/
+static void *bmx_vhost_create_scfg(apr_pool_t *p, server_rec *s);
+
+/**
  * Callback definition used by bmx plugins to print the contents of
  * bean back to the querying client. This interface allows mod_bmx
  * to support multiple output formats without requiring bmx plugins
