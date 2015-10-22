@@ -355,7 +355,7 @@ static int create_vhost_key(apr_pool_t *p, server_rec *s,
 {
     int rv = 0;
 
-    key->dptr = apr_psprintf(p, "%s-%s", KEY_PREFIX, s->server_hostname);
+    key->dptr = apr_psprintf(p, "%s-%s:%d", KEY_PREFIX, s->server_hostname, s->port);
     key->dsize = strlen(key->dptr);
 
     return rv;
