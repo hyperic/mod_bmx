@@ -177,3 +177,11 @@ Version 0.9.4:
 
 * Introduced mod_status output hook facilities (emits no output, yet).
 
+Version 0.9.5:
+
+* Improve Win32 build [maximebeck]
+
+* Correctly traverse all servers when reporting status [maximebeck, jfclere]
+
+* Distinguish identical hostnames across multiple ports [maximebeck, jfclere]
+
