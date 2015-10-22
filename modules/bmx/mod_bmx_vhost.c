@@ -149,6 +149,11 @@ static apr_global_mutex_t *dbmlock;
 static apr_dbm_t *dbm;
 
 /**
+ * Main server (like in modules/filters/mod_ext_filter.c).
+ */
+static server_rec *main_server = NULL;
+
+/**
  * The server-level module config for mod_bmx_vhost contains one reusable
  * objectname for each type of metric lifetime.
  */
@@ -890,7 +895,7 @@ static int bmx_vhost_query_hook(request_rec *r,
         return rv;
     }
 
-    for (s = r->connection->base_server; s; s = s->next) {
+    for (s = main_server; s; s = s->next) {
         struct bmx_vhost_scfg *scfg = ap_get_module_config(s->module_config,
                                                            &bmx_vhost_module);
         /* Print out the mod_bmx_vhost:Type=forever/since-start/since-restart
@@ -941,7 +946,7 @@ static int bmx_vhost_status_hook(request_rec *r, int flags)
         return rv;
     }
 
-    for (s = r->connection->base_server; s; s = s->next) {
+    for (s = main_server; s; s = s->next) {
         struct bmx_vhost_scfg *scfg = ap_get_module_config(s->module_config,
                                                            &bmx_vhost_module);
         /* Print out the mod_bmx_vhost:Type=forever/since-start/since-restart
@@ -988,6 +993,9 @@ static int bmx_vhost_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     const char *dbmfile1 = NULL, *dbmfile2 = NULL;
     const char *userdata_key = "bmx_vhost_post_config";
     void *scfg;
+
+    /* set the main server */
+    main_server = s;
 
     /* open a DBM to check that it can be created, see WARN below */
     rv = apr_dbm_open(&dbm, dbm_fname, APR_DBM_RWCREATE,
