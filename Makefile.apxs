@@ -68,9 +68,14 @@ install-conf:
 			  $(DESTDIR)$(exp_sysconfdir)/original
 	for i in $(DESTDIR)$(httpd_conffile) $(DESTDIR)$(httpd_origconffile); do \
 	    if test -f $$i; then \
-		($(awk) -f $(bmx_srcdir)/build/addloadexample.awk \
-		    -v MODULE=bmx -v DSO=.so -v LIBPATH=$(rel_libexecdir) \
-		    < $$i > $$i.new && \
+		($(awk) -f $(bmx_srcdir)/build/addloadexample.awk -v DSO=.so \
+		    -v MODULE=bmx -v LIBPATH=$(rel_libexecdir) \
+		    < $$i | \
+		 $(awk) -f $(bmx_srcdir)/build/addloadexample.awk -v DSO=.so \
+		    -v MODULE=bmx_status -v LIBPATH=$(rel_libexecdir) | \
+		 $(awk) -f $(bmx_srcdir)/build/addloadexample.awk -v DSO=.so \
+		    -v MODULE=bmx_vhost -v LIBPATH=$(rel_libexecdir) \
+		    > $$i.new && \
 		 mv $$i $$i.bak && mv $$i.new $$i \
 	        ) || true; \
 	    fi; \
