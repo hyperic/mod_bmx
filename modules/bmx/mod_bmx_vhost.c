@@ -111,9 +111,9 @@ APLOG_USE_MODULE(bmx_vhost);
 #define BMX_VHOST_DOMAIN "mod_bmx_vhost"
 
 /** The default DB filename where persistent data is stored */
-#define DBM_FNAME "logs/bmx_vhost.db"
+#define DBM_FNAME "logs/bmx_vhost1.db"
 /** The default DB lock filename used to protect access to the DB file */
-#define DBMLOCK_FNAME "logs/bmx_vhost.db.lock"
+#define DBMLOCK_FNAME "logs/bmx_vhost1.db.lock"
 
 #ifndef DEFAULT_TIME_FORMAT
 /** The default time format used by this module */
@@ -196,6 +196,8 @@ static struct bmx_vhost_scfg *global_scfg;
 
 /**
  * The metrics that are recorded for each VHost and for each Timespan.
+ * 
+ * Rev the default DBM_FNAME to avoid crashes if this record format changes
  */
 struct vhost_timespan {
     /** The number of bytes received from GET requests */
@@ -263,6 +265,8 @@ struct vhost_timespan {
 /**
  * This record is stored in the DBM for each VHost, and contains the set
  * of metrics for each of the supported timespans.
+ * 
+ * Rev the default DBM_FNAME to avoid crashes if this record format changes
  */
 struct vhost_data {
     struct vhost_timespan forever;
