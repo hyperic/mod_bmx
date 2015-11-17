@@ -95,10 +95,13 @@ StartElapsed: 17484569829</pre>
     <p>The available record types include the 'forever' (since the cache file
     was last manually purged), 'since-start' and 'since-restart' tallies.</p>
 
-    <p>The available Host and Port will also include grand total _ANY_ records;
-    be aware that the specific Port will only display correctly if the
-    ServerName directives specifies a port number (e.g. example.com:80), and
-    will otherwise display Host=example.com,Port=Any.</p>
+    <p>The available Host and Port will also include grand total summary
+    <code>Host:_GLOBAL_,Port=_ANY_</code> records.  Be aware that the 
+    specific Port number for individual virtual hosts will only display
+    correctly if all <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directives
+    specify the port number (e.g. <code>ServerName example.com:80</code>),
+    and will otherwise display a generic value, e.g. 
+    <code>Host=example.com,Port=_ANY_</code>.</p>
   </div>
 </div>
 <div class="bottomlang">
