@@ -88,5 +88,66 @@ StartElapsed: 17484569829
     and will otherwise display a generic value, e.g. 
     <code>Host=example.com,Port=_ANY_</code>.</p>
   </section>
+
+  <directivesynopsis>
+    <name>BMXVHostLockFilename</name>
+    <description>Semaphore for serializing access to the BMXVHostDBM file</description>
+i   <syntax>BMXVHostLockFilename <em>filename</em></syntax>
+    <default>BMXVHostLockFilename logs/bmx_vhost1.db.lock</default>
+    <contextlist><context>server config</context></contextlist>
+
+    <usage>
+      <p>This configures the BMX vhost engine's file lock which is used for
+      serializing access to the BMXVHostDBM file, and ensure that each record
+      updated correctly tallies the work performed by all concurrent worker
+      threads and processes. This directive can only be used in the global
+      server context because it's only useful to have one global mutex.</p>
+
+      <p>A portable physical (lock-)file and the <code>flock()</code> or
+      <code>fcntl()</code> function are used as the Mutex, depending on the
+      specific platform. Always use a local disk filesystem for
+      <code>/path/to/mutex</code> and never a file residing on a NFS- or
+      AFS-filesystem.</p>
+
+      <example><title>Example</title>
+          SSLMutex file:/var/lock/httpd/bmx_vhost.lock
+      </example>
+    </usage>
+  </directivesynopsis>
+
+  <directivesynopsis>
+    <name>BMXVHostDBMFilename</name>
+      <description>Name of the inter-process virtual host activity tally</description>
+      <syntax>BMXVHostLockFilename <em>file</em></syntax>
+      <default>BMXVHostLockFilename logs/bmx_vhost1.db</default>
+      <contextlist><context>server config</context></contextlist>
+
+      <usage>
+        <p>This configures the storage file for the global/inter-process
+        BMX virtual host activity summary table.  This is necessary because
+        multiple threads across multiple processes are satisfying requests
+        in parallel against all of the virtual hosts, and the purpose of
+        <module>mod_bmx_vhost</module> is to summarize the activity across
+        all of these individual worker threads.</p>
+
+        <p>This makes use of a DBM hash file which must be stored on local disk
+        to sum the activity of each specific virtual host on a since-restart,
+        since-start and 'forever' state (until this DBM accumulator file is
+        manually purged).</p>
+
+        <example><title>Example</title>
+          BMXVHostDBMFilename /var/cache/httpd/bmx_vhost_activity<br />
+        </example>
+
+        <p>The default filename includes the digit '1' to designate that the
+        file structure has changed since prior releases of mod_bmx. In the
+        future, the authors expect to update that default to reflect a further
+        change in data collection format. If a custom file name is specified,
+        users are cautioned to purge the collection file during an upgrade of
+        mod_bmx_vhost, or the accumulated 'forever' results may be either
+        meaningless or can potentially cause the server to segfault.</p>
+      </usage>
+    </directivesynopsis>
+  <directivesynopsis>
 </modulesynopsis>
 
