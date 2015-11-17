@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<modulesynopsis metafile="mod_bmx_vhost.xml.meta">
+
+  <name>mod_bmx_vhost</name>
+  <description>Basic Management Extension (BMX) virtual host summary</description>
+  <status>External</status> <!-- For now... -->
+  <sourcefile>mod_bmx_vhost.c</sourcefile>
+  <identifier>bmx_vhost_module</identifier>
+  <compatibility>Apache 2.0 and higher</compatibility>
+
+  <summary>
+    <p>The <module>mod_bmx_vhost</module> module provides operational tallies
+    of activity in each specific virutal host, and aggregates these tallies
+    for the entire server.</p>
+ 
+    <p>The <module>mod_bmx</module> module is the core BMX module and 
+    must be loaded in order to support any BMX plugins. It provides the
+    base functionality for satisfying BMX queries. For basic configuration
+    and use of <module>mod_bmx</module> and the plugin modules, refer to
+    that module's manual page.</p>
+  </summary>
+
+  <!-- References to other documents or directives -->
+  <seealso><module>mod_bmx</module></seealso>
+  <seealso><module>mod_bmx_status</module></seealso>
+
+  <section id="output">
+    <title>mod_bmx_vhost output fields</title>
+    <p>The resulting fields in the mod_bmx_vhost output will appear as;</p>
+    <highlight language="json">
+Name: mod_bmx_vhost:Type=forever,Host=example.com,Port=80
+InBytesGET: 0
+InBytesHEAD: 0
+InBytesPOST: 0
+InBytesPUT: 0
+InRequestsGET: 27
+InRequestsHEAD: 0
+InRequestsPOST: 0
+InRequestsPUT: 0
+OutBytes200: 82438
+OutBytes301: 0
+OutBytes302: 0
+OutBytes401: 0
+OutBytes403: 212
+OutBytes404: 418
+OutBytes500: 1052
+OutResponses200: 21
+OutResponses301: 0
+OutResponses302: 0
+OutResponses401: 0
+OutResponses403: 1
+OutResponses404: 2
+OutResponses500: 2
+InLowBytes: 0
+OutLowBytes: 85547
+InRequests: 36
+OutResponses: 36
+StartDate: Tuesday, 17-Nov-2015 10:54:29 CST
+StartTime: 1447779269518665
+StartElapsed: 17484569829
+    </highlight>
+    <p>The available record types include the 'forever' (since the cache file
+    was last manually purged), 'since-start' and 'since-restart' tallies.</p>
+
+    <p>The available Host and Port will also include grand total _ANY_ records;
+    be aware that the specific Port will only display correctly if the
+    ServerName directives specifies a port number (e.g. example.com:80), and
+    will otherwise display Host=example.com,Port=Any.</p>
+  </section>
+</modulesynopsis>
+

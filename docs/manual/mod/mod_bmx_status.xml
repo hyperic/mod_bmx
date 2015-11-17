@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<modulesynopsis metafile="mod_bmx_status.xml.meta">
+
+  <name>mod_bmx_status</name>
+  <description>Basic Management Extension (BMX) server status module</description>
+  <status>External</status> <!-- For now... -->
+  <sourcefile>mod_bmx_status.c</sourcefile>
+  <identifier>bmx_status_module</identifier>
+  <compatibility>Apache 2.0 and higher</compatibility>
+
+  <summary>
+    <p>The <module>mod_bmx_status</module> module provides key status values
+    of the running server, similar to <module>mod_status</module>.</p>
+ 
+    <p>The <module>mod_bmx</module> module is the core BMX module and 
+    must be loaded in order to support any BMX plugins. It provides the
+    base functionality for satisfying BMX queries. For basic configuration
+    and use of <module>mod_bmx</module> and the plugin modules, refer to
+    that module's manual page.</p>
+  </summary>
+
+  <!-- References to other documents or directives -->
+  <seealso><module>mod_bmx</module></seealso>
+  <seealso><module>mod_bmx_vhost</module></seealso>
+  <seealso><module>mod_status</module></seealso>
+
+  <section id="output">
+    <title>mod_bmx_status output fields</title>
+    <p>The resulting fields in the mod_bmx_status output will appear as;</p>
+<highlight language="json">
+Name: mod_bmx_status:Name=ServerStatus,Type=Normal
+ServerName: example.com
+ServerVersion: Apache/2.4.17 (Unix) OpenSSL/1.0.2d mod_bmx/0.9.6
+ServerBuilt: Nov 17 2015 15:39:28
+CurrentTime: Tuesday, 17-Nov-2015 15:43:04 CST
+RestartTime: Tuesday, 17-Nov-2015 15:40:42 CST
+ParentServerGeneration: 0
+ServerUptimeSeconds: 141
+TotalAccesses: 10
+TotalTrafficKilobytes: 24
+CPUUsage: u0 s0 cu0 cs0
+ReqPerSec: 0.070922
+KilobytesPerSec: 174.297867
+KilobytesPerReq: 2457
+BusyWorkers: 1u
+IdleWorkers: 99u
+    </highlight>
+  </section>
+</modulesynopsis>
+

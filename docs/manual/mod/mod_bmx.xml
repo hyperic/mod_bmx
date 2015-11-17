@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<modulesynopsis metafile="mod_bmx.xml.meta">
+
+  <name>mod_bmx</name>
+  <description>Basic Management Extension (BMX) base module</description>
+  <status>External</status> <!-- For now... -->
+  <sourcefile>mod_bmx.c</sourcefile>
+  <identifier>bmx_module</identifier>
+  <compatibility>Apache 2.0 and higher</compatibility>
+
+  <summary>
+    <p>BMX is a framework for Apache to provide internal runtime statistics
+    and configuration information to interested remote agents. It can
+    be used to report on the internal workings and status of Apache at
+    runtime, such as performance metrics and current capacity.</p>
+
+    <p>The <module>mod_bmx</module> module is the core BMX module and 
+    must be loaded in order to support any BMX plugins. It provides the
+    base functionality for satisfying BMX queries.</p>
+
+    <p>BMX includes a several plugin modules to report specific server
+    information, including <module>mod_bmx_status</module> and
+    <module>mod_bmx_vhost</module>, as well as an API for creating new 
+    BMX plugin extensions.</p>
+  </summary>
+
+  <!-- References to other documents or directives -->
+  <seealso><module>mod_bmx_status</module></seealso>
+  <seealso><module>mod_bmx_vhost</module></seealso>
+
+  <section id="config">
+    <title>Configuring mod_bmx</title>
+
+    <p>The <module>mod_bmx</module> base module must be loaded to serve
+    bmx response pages, and all desired mod_bmx_{provider} modules must
+    also be loaded, such as <module>mod_bmx_status</module> and/or
+    <module>mod_bmx_vhost</module>.  The example configuration below will
+    serve the bmx result page from http://localhost/bmx including server
+    status and virtual host summaries, only in response to a local request:</p>
+
+    <highlight language="config">
+LoadModule bmx_module modules/mod_bmx.so
+LoadModule bmx_status_module modules/mod_bmx_status.so
+LoadModule bmx_vhost_module modules/mod_bmx_vhost.so
+
+ExtendedStatus On
+
+&lt;Location /bmx&gt;
+    SetHandler bmx-handler
+    Require ip 127.0.0.1 ::1
+&lt;/Location&gt;
+    </highlight>
+  </section>
+
+  <section id="query">
+    <title>Querying mod_bmx</title>
+
+    <p><module>mod_bmx</module> accepts query arguments in order to return
+    a more limited scope of information. The default query pattern, if none
+    is specified, is <code>?query=*:*</code>.</p>
+
+    <p><code>http://localhost/bmx?query=mod_bmx_status:*</code> will return
+    only the status-related elements from <module>mod_bmx_status</module>.</p>
+
+    <p><code>http://localhost/bmx?query=mod_bmx_vhost:Type=since-restart</code>
+    will return only vhost-specific tallies from <module>mod_bmx_vhost</module>
+    since the most recent server restart.</p>
+
+    <p><code>http://localhost/bmx?query=mod_bmx_vhost:Port=443</code> will
+    return only vhost-specific tallies from <module>mod_bmx_vhost</module>
+    for the https virtual hosts.</p>
+
+    <p>Consult the specific bmx plugin docs and source code for other query
+    variables specific to the bmx bean provider, and the README-BMX file for
+    more of the underlying API and query mechanics.</p>
+  </section>
+</modulesynopsis>
+
