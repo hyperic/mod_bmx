@@ -45,7 +45,7 @@ BEGIN
       VALUE "FileDescription", LONG_NAME_STR "\0"
       VALUE "FileVersion", MODBMX_REVISION "\0"
       VALUE "InternalName", BIN_NAME_STR "\0"
-      VALUE "LegalCopyright", "Copyright 2012 VMware, Inc.\0"
+      VALUE "LegalCopyright", "Copyright 2012-2015 VMware, Inc.\0"
       VALUE "OriginalFilename", BIN_NAME_STR "\0"
       VALUE "ProductName", "BMX Monitoring Modules for Apache HTTP Server\0"
       VALUE "ProductVersion", MODBMX_REVISION "\0"

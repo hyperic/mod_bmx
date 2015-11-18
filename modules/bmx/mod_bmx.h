@@ -28,12 +28,12 @@
 #include "apr_general.h" /* stringify */
 
 #define MODBMX_COPYRIGHT \
-  "Copyright 2012 VMware, Inc."
+  "Copyright 2012-2015 VMware, Inc."
 
 #define MODBMX_VERSION_MAJOR  0
 #define MODBMX_VERSION_MINOR  9
 #define MODBMX_VERSION_SUBVER 6
-#define MODBMX_VERSION_DEV    1
+#define MODBMX_VERSION_DEV    0
 
 #if MODBMX_VERSION_DEV
 #define MODBMX_VERSION_DEVSTR "-dev"

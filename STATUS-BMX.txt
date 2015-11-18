@@ -2,6 +2,7 @@ mod_bmx 1.0.0 STATUS:                                          -*-text-*-
 
 Releases:
 
+* 0.9.6 - Tagged RC7 2015-11-18
 * 0.9.5 - Tagged RC6 2012-06-30
 * 0.9.4 - Tagged RC5 2012-06-25
 * 0.9.3 - Tagged RC4 2012-03-14
@@ -26,6 +27,14 @@ Release Showstoppers:
 
 Wishlist for 1.0.0 release:
 
+* Adopt socache APIs for storing persistent data, such as selection between
+  a DBM or SHM, for httpd 2.4 and beyond.  Use this as well in 2.2 if the
+  user toggles the option (as socache modules have been backported).
+
+* Adopt ap_mutex management for transparent selection of locking mechanics
+  for httpd 2.4 and beyond.  Use this as well in 2.2 if user toggles the
+  option (as the mod_mutex backport provides this option).
+
 * Drop duplicate 'global' record keeping; either the caller or bmx/status
   reporting sections should sum that tally, reducing the lock hold time.
 
@@ -37,14 +46,6 @@ Wishlist for 1.0.0 release:
   today in recognized buckets.
 
 * Correct request data collection; missing HTTP request/header byte counts. 
-
-* Adopt socache APIs for storing persistent data, such as selection between
-  a DBM or SHM, for httpd 2.4 and beyond.  Use this as well in 2.2 if the
-  user toggles the option (as socache modules have been backported).
-
-* Adopt ap_mutex management for transparent selection of locking mechanics
-  for httpd 2.4 and beyond.  Use this as well in 2.2 if user toggles the
-  option (as the mod_mutex backport provides this option).
 
 Wishlist:
 
@@ -193,4 +194,6 @@ Version 0.9.6:
 * Correctly traverse all servers when reporting status [maximebeck, jfclere]
 
 * Distinguish identical hostnames across multiple ports [maximebeck, jfclere]
+
+* Introduce httpd project styled docs for merging into httpd/manual [wrowe]
 
