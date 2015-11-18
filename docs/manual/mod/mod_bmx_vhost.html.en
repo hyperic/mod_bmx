@@ -163,7 +163,7 @@ StartElapsed: 17484569829</pre>
       AFS-filesystem.</p>
 
       <div class="example"><h3>Example</h3><p><code>
-          SSLMutex file:/var/lock/httpd/bmx_vhost.lock
+          BMXVHostLockFilename /var/lock/httpd/bmx_vhost.lock
       </code></p></div>
     
 </div>

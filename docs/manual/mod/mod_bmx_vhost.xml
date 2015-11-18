@@ -110,7 +110,7 @@ i   <syntax>BMXVHostLockFilename <em>filename</em></syntax>
       AFS-filesystem.</p>
 
       <example><title>Example</title>
-          SSLMutex file:/var/lock/httpd/bmx_vhost.lock
+          BMXVHostLockFilename /var/lock/httpd/bmx_vhost.lock
       </example>
     </usage>
   </directivesynopsis>
