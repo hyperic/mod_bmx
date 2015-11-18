@@ -69,9 +69,10 @@
     <p>The <code class="module"><a href="../mod/mod_bmx.html">mod_bmx</a></code> base module must be loaded to serve
     bmx response pages, and all desired mod_bmx_{provider} modules must
     also be loaded, such as <code class="module"><a href="../mod/mod_bmx_status.html">mod_bmx_status</a></code> and/or
-    <code class="module"><a href="../mod/mod_bmx_vhost.html">mod_bmx_vhost</a></code>.  The example configuration below will
-    serve the bmx result page from http://localhost/bmx including server
-    status and virtual host summaries, only in response to a local request:</p>
+    <code class="module"><a href="../mod/mod_bmx_vhost.html">mod_bmx_vhost</a></code>.  The example configuration below for
+    httpd 2.4 will serve the bmx result page from http://localhost/bmx
+    including server status and virtual host summaries, only in response
+    to a local request:</p>
 
     <pre class="prettyprint lang-config">LoadModule bmx_module modules/mod_bmx.so
 LoadModule bmx_status_module modules/mod_bmx_status.so
