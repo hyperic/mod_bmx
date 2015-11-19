@@ -92,7 +92,7 @@ StartElapsed: 17484569829
   <directivesynopsis>
     <name>BMXVHostLockFilename</name>
     <description>Semaphore for serializing access to the BMXVHostDBM file</description>
-i   <syntax>BMXVHostLockFilename <em>filename</em></syntax>
+    <syntax>BMXVHostLockFilename <em>filename</em></syntax>
     <default>BMXVHostLockFilename logs/bmx_vhost1.db.lock</default>
     <contextlist><context>server config</context></contextlist>
 
